@@ -916,9 +916,6 @@ export class DonationResolver {
         case NETWORK_IDS.OPTIMISM_SEPOLIA:
           priceChainId = NETWORK_IDS.OPTIMISTIC;
           break;
-        case NETWORK_IDS.MORDOR_ETC_TESTNET:
-          priceChainId = NETWORK_IDS.ETC;
-          break;
         default:
           priceChainId = networkId;
           break;

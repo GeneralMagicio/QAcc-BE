@@ -205,27 +205,9 @@ const availableNetworkValues = [
   { value: NETWORK_IDS.GOERLI, label: 'GOERLI' },
   { value: NETWORK_IDS.POLYGON, label: 'POLYGON' },
   { value: NETWORK_IDS.OPTIMISTIC, label: 'OPTIMISTIC' },
-  { value: NETWORK_IDS.ETC, label: 'ETC' },
-  {
-    value: NETWORK_IDS.MORDOR_ETC_TESTNET,
-    label: 'MORDOR ETC TESTNET',
-  },
   { value: NETWORK_IDS.OPTIMISM_SEPOLIA, label: 'OPTIMISM SEPOLIA' },
-  { value: NETWORK_IDS.CELO, label: 'CELO' },
-  {
-    value: NETWORK_IDS.CELO_ALFAJORES,
-    label: 'ALFAJORES (Test CELO)',
-  },
-  { value: NETWORK_IDS.ARBITRUM_MAINNET, label: 'ARBITRUM MAINNET' },
-  { value: NETWORK_IDS.ARBITRUM_SEPOLIA, label: 'ARBITRUM SEPOLIA' },
-  { value: NETWORK_IDS.BASE_MAINNET, label: 'BASE MAINNET' },
-  { value: NETWORK_IDS.BASE_SEPOLIA, label: 'BASE SEPOLIA' },
   { value: NETWORK_IDS.ZKEVM_MAINNET, label: 'ZKEVM Mainnet' },
   { value: NETWORK_IDS.ZKEVM_CARDONA, label: 'ZKEVM Cardona' },
-  { value: NETWORK_IDS.XDAI, label: 'XDAI' },
-  { value: NETWORK_IDS.BSC, label: 'BSC' },
-  { value: NETWORK_IDS.SOLANA_MAINNET, label: 'SOLANA' },
-  { value: NETWORK_IDS.SOLANA_TESTNET, label: 'SOLALAN TESTNET' },
 ];
 
 export const qfRoundTab = {

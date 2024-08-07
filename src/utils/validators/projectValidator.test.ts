@@ -9,7 +9,6 @@ import {
   assertThrowsAsync,
   createProjectData,
   generateRandomEtheriumAddress,
-  generateRandomSolanaAddress,
   saveProjectDirectlyToDb,
   SEED_DATA,
 } from '../../../test/testUtils';
@@ -131,32 +130,10 @@ function validateProjectWalletAddressTestCases() {
     }, errorMessages.INVALID_WALLET_ADDRESS);
     await saveProjectDirectlyToDb(createProjectData());
   });
-  it('should throw exception when address is not valid - Solana', async () => {
-    await assertThrowsAsync(async () => {
-      await validateProjectWalletAddress(SEED_DATA.MALFORMED_SOLANA_ADDRESS);
-    }, errorMessages.INVALID_WALLET_ADDRESS);
-
-    const project = await saveProjectDirectlyToDb(createProjectData());
-
-    await assertThrowsAsync(async () => {
-      await validateProjectWalletAddress(
-        SEED_DATA.MALFORMED_SOLANA_ADDRESS,
-        project.id,
-        ChainType.SOLANA,
-      );
-    }, errorMessages.INVALID_WALLET_ADDRESS);
-  });
 
   it('should return true for valid address - Ethereum', async () => {
     const valid = await validateProjectWalletAddress(
       generateRandomEtheriumAddress(),
-    );
-    assert.isTrue(valid);
-  });
-
-  it('should return true for valid address - Solana', async () => {
-    const valid = await validateProjectWalletAddress(
-      generateRandomSolanaAddress(),
     );
     assert.isTrue(valid);
   });
@@ -172,14 +149,6 @@ function isWalletAddressValidTestCases() {
       isWalletAddressValid(
         '0x5AC583Feb2b1f288C0A51d6Cdca2e8c814BFE93B',
         ChainType.EVM,
-      ),
-    );
-  });
-  it('should return false for valid Ethereum address when chainType is wrong', () => {
-    assert.isFalse(
-      isWalletAddressValid(
-        '0x5AC583Feb2b1f288C0A51d6Cdca2e8c814BFE93B',
-        ChainType.SOLANA,
       ),
     );
   });
@@ -200,14 +169,6 @@ function isWalletAddressValidTestCases() {
   it('should return true for valid solana address', () => {
     assert.isTrue(
       isWalletAddressValid('7Qg4Nj7y6YV1iRQ6jQZn7hLQ7L4r1L7Xb1Y7JZrR9Q7g'),
-    );
-  });
-  it('should return true for valid solana address - chainType defined', () => {
-    assert.isTrue(
-      isWalletAddressValid(
-        '7Qg4Nj7y6YV1iRQ6jQZn7hLQ7L4r1L7Xb1Y7JZrR9Q7g',
-        ChainType.SOLANA,
-      ),
     );
   });
 }

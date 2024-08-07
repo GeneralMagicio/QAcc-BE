@@ -18,7 +18,7 @@ import { User } from '../entities/user';
 const RandomAddress1 = '0xf3ddeb5022a6f06b61488b48c90315087ca2beef';
 const RandomAddress2 = '0xc42a4791735ae1253c50c6226832e37ede3669f5';
 const draftSaveTimeStampMS = 1707567300 * 1000;
-const networkId = NETWORK_IDS.XDAI;
+const networkId = NETWORK_IDS.MAIN_NET;
 const anonymous = false;
 
 const sharedDonationData: Partial<DraftDonation> = {

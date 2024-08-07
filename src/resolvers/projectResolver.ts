@@ -482,7 +482,7 @@ export class ProjectResolver {
   ) {
     if (!filtersArray || filtersArray.length === 0) return query;
     const networkIds: number[] = [];
-    let acceptFundOnSolanaSeen = false;
+    const acceptFundOnSolanaSeen = false;
 
     filtersArray.forEach(filter => {
       switch (filter) {
@@ -502,30 +502,11 @@ export class ProjectResolver {
                         WHERE project_qf_rounds_qf_round."projectId" = project.id AND qf_round."isActive" = true
                 )`,
           );
-        case FilterField.AcceptFundOnGnosis:
-          networkIds.push(NETWORK_IDS.XDAI);
-          return;
         case FilterField.AcceptFundOnMainnet:
           networkIds.push(NETWORK_IDS.MAIN_NET);
 
           // Add this to make sure works on Staging
           networkIds.push(NETWORK_IDS.GOERLI);
-          return;
-        case FilterField.AcceptFundOnCelo:
-          networkIds.push(NETWORK_IDS.CELO);
-
-          // Add this to make sure works on Staging
-          networkIds.push(NETWORK_IDS.CELO_ALFAJORES);
-          return;
-
-        case FilterField.AcceptFundOnArbitrum:
-          networkIds.push(NETWORK_IDS.ARBITRUM_MAINNET);
-          networkIds.push(NETWORK_IDS.ARBITRUM_SEPOLIA);
-          return;
-
-        case FilterField.AcceptFundOnBase:
-          networkIds.push(NETWORK_IDS.BASE_MAINNET);
-          networkIds.push(NETWORK_IDS.BASE_SEPOLIA);
           return;
 
         case FilterField.AcceptFundOnZKEVM:
@@ -541,15 +522,6 @@ export class ProjectResolver {
 
           // Add this to make sure works on Staging
           networkIds.push(NETWORK_IDS.OPTIMISM_SEPOLIA);
-          return;
-        case FilterField.AcceptFundOnETC:
-          networkIds.push(NETWORK_IDS.ETC);
-
-          // Add this to make sure works on Staging
-          networkIds.push(NETWORK_IDS.MORDOR_ETC_TESTNET);
-          return;
-        case FilterField.AcceptFundOnSolana:
-          acceptFundOnSolanaSeen = true;
           return;
 
         default:
@@ -569,17 +541,6 @@ export class ProjectResolver {
                         WHERE "isRecipient" = true AND 
                         "projectId" = project.id AND
                         "networkId" IN (${networkIds.join(', ')}) 
-                      )`,
-            );
-          }
-          if (acceptFundOnSolanaSeen) {
-            subQuery.orWhere(
-              `EXISTS (
-                        SELECT *
-                        FROM project_address
-                        WHERE "isRecipient" = true AND 
-                        "projectId" = project.id AND
-                        "chainType" = '${ChainType.SOLANA}'
                       )`,
             );
           }

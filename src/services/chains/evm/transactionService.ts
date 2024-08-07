@@ -15,7 +15,6 @@ import {
   getBlockExplorerApiUrl,
   getNetworkNativeToken,
   getProvider,
-  NETWORK_IDS,
 } from '../../../provider';
 import { logger } from '../../../utils/logger';
 import { gnosisSafeL2ABI } from '../../../assets/gnosisSafeL2ABI';
@@ -453,7 +452,7 @@ export const getDisperseTransactions = async (
   );
   if (transactionData.name === 'disperseEther') {
     token = {
-      symbol: networkId === NETWORK_IDS.XDAI ? 'XDAI' : 'ETH',
+      symbol: 'ETH',
       decimals: 18,
     };
     recipients = transactionData.params[0].value;

@@ -22,8 +22,6 @@ import { NETWORK_IDS } from '../src/provider';
 import { MainCategory } from '../src/entities/mainCategory';
 import { redis } from '../src/redis';
 import { logger } from '../src/utils/logger';
-import { ChainType } from '../src/types/network';
-import { COINGECKO_TOKEN_IDS } from '../src/adapters/price/CoingeckoPriceAdapter';
 
 async function seedDb() {
   await seedUsers();
@@ -40,21 +38,6 @@ async function seedDb() {
 }
 
 async function seedTokens() {
-  for (const token of SEED_DATA.TOKENS.xdai) {
-    const tokenData = {
-      ...token,
-      networkId: 100,
-      isGivbackEligible: true,
-    };
-    if (token.symbol === 'GIV') {
-      (tokenData as any).order = 1;
-    } else if (token.symbol === 'XDAI') {
-      (tokenData as any).order = 2;
-    } else if (token.symbol === 'WETH') {
-      (tokenData as any).order = 3;
-    }
-    await Token.create(tokenData).save();
-  }
   for (const token of SEED_DATA.TOKENS.mainnet) {
     const tokenData = {
       ...token,
@@ -104,90 +87,6 @@ async function seedTokens() {
       // TODO I'm not sure whether we support GIV or not
       (tokenData as any).order = 1;
     } else if (token.symbol === 'MATIC') {
-      (tokenData as any).order = 2;
-    }
-    await Token.create(tokenData as Token).save();
-  }
-  for (const token of SEED_DATA.TOKENS.celo) {
-    const tokenData = {
-      ...token,
-      networkId: 42220,
-      isGivbackEligible: true,
-    };
-    if (token.symbol === 'GIV') {
-      // TODO I'm not sure whether we support GIV or not
-      (tokenData as any).order = 1;
-    } else if (token.symbol === 'CELO') {
-      (tokenData as any).order = 2;
-    }
-    await Token.create(tokenData as Token).save();
-  }
-  for (const token of SEED_DATA.TOKENS.celo_alfajores) {
-    const tokenData = {
-      ...token,
-      networkId: 44787,
-      isGivbackEligible: true,
-    };
-    if (token.symbol === 'GIV') {
-      // TODO I'm not sure whether we support GIV or not
-      (tokenData as any).order = 1;
-    } else if (token.symbol === 'CELO') {
-      (tokenData as any).order = 2;
-    }
-    await Token.create(tokenData as Token).save();
-  }
-  for (const token of SEED_DATA.TOKENS.arbitrum_mainnet) {
-    const tokenData = {
-      ...token,
-      networkId: 42161,
-      isGivbackEligible: true,
-    };
-    if (token.symbol === 'GIV') {
-      // TODO I'm not sure whether we support GIV or not
-      (tokenData as any).order = 1;
-    } else if (token.symbol === 'ETH') {
-      (tokenData as any).order = 2;
-    }
-    await Token.create(tokenData as Token).save();
-  }
-  for (const token of SEED_DATA.TOKENS.arbitrum_sepolia) {
-    const tokenData = {
-      ...token,
-      networkId: 421614,
-      isGivbackEligible: true,
-    };
-    if (token.symbol === 'GIV') {
-      // TODO I'm not sure whether we support GIV or not
-      (tokenData as any).order = 1;
-    } else if (token.symbol === 'ETH') {
-      (tokenData as any).order = 2;
-    }
-    await Token.create(tokenData as Token).save();
-  }
-  for (const token of SEED_DATA.TOKENS.base_mainnet) {
-    const tokenData = {
-      ...token,
-      networkId: NETWORK_IDS.BASE_MAINNET,
-      isGivbackEligible: true,
-    };
-    if (token.symbol === 'GIV') {
-      // TODO I'm not sure whether we support GIV or not
-      (tokenData as any).order = 1;
-    } else if (token.symbol === 'ETH') {
-      (tokenData as any).order = 2;
-    }
-    await Token.create(tokenData as Token).save();
-  }
-  for (const token of SEED_DATA.TOKENS.base_sepolia) {
-    const tokenData = {
-      ...token,
-      networkId: NETWORK_IDS.BASE_SEPOLIA,
-      isGivbackEligible: true,
-    };
-    if (token.symbol === 'GIV') {
-      // TODO I'm not sure whether we support GIV or not
-      (tokenData as any).order = 1;
-    } else if (token.symbol === 'ETH') {
       (tokenData as any).order = 2;
     }
     await Token.create(tokenData as Token).save();
@@ -250,62 +149,6 @@ async function seedTokens() {
     }
     await Token.create(tokenData as Token).save();
   }
-  for (const token of SEED_DATA.TOKENS.etc) {
-    const tokenData = {
-      ...token,
-      networkId: 61,
-      isGivbackEligible: true,
-    };
-    if (token.symbol === 'GIV') {
-      // TODO I'm not sure whether we support GIV or not
-      (tokenData as any).order = 1;
-    } else if (token.symbol === 'ETC') {
-      (tokenData as any).order = 2;
-    }
-    await Token.create(tokenData as Token).save();
-  }
-  for (const token of SEED_DATA.TOKENS.morderEtc) {
-    const tokenData = {
-      ...token,
-      networkId: 63,
-      isGivbackEligible: true,
-    };
-    if (token.symbol === 'GIV') {
-      // TODO I'm not sure whether we support GIV or not
-      (tokenData as any).order = 1;
-    } else if (token.symbol === 'mETC') {
-      (tokenData as any).order = 2;
-    }
-    await Token.create(tokenData as Token).save();
-  }
-  for (const token of SEED_DATA.TOKENS.solana_mainnet) {
-    const tokenData = {
-      ...token,
-      networkId: NETWORK_IDS.SOLANA_MAINNET,
-      isGivbackEligible: false,
-      chainType: ChainType.SOLANA,
-      coingeckoId: COINGECKO_TOKEN_IDS.SOLANA,
-    };
-    await Token.create(tokenData as Token).save();
-  }
-  for (const token of SEED_DATA.TOKENS.solana_devnet) {
-    const tokenData = {
-      ...token,
-      networkId: NETWORK_IDS.SOLANA_DEVNET,
-      isGivbackEligible: false,
-      chainType: ChainType.SOLANA,
-    };
-    await Token.create(tokenData as Token).save();
-  }
-  for (const token of SEED_DATA.TOKENS.solana_testnet) {
-    const tokenData = {
-      ...token,
-      networkId: NETWORK_IDS.SOLANA_TESTNET,
-      isGivbackEligible: false,
-      chainType: ChainType.SOLANA,
-    };
-    await Token.create(tokenData as Token).save();
-  }
 }
 
 async function seedOrganizations() {
@@ -346,23 +189,13 @@ async function relateOrganizationsToTokens() {
       networkId: NETWORK_IDS.MAIN_NET,
     },
   })) as Token;
-  const baseMainnetToken = (await Token.findOne({
-    where: {
-      symbol: 'ETH',
-      networkId: NETWORK_IDS.BASE_MAINNET,
-    },
-  })) as Token;
   const optimismMainnetToken = (await Token.findOne({
     where: {
       symbol: 'ETH',
       networkId: NETWORK_IDS.OPTIMISTIC,
     },
   })) as Token;
-  endaoment.tokens = [
-    etherMainnetToken,
-    baseMainnetToken,
-    optimismMainnetToken,
-  ];
+  endaoment.tokens = [etherMainnetToken, optimismMainnetToken];
   await endaoment?.save();
   const changeTokens = await Token.find({
     where: [

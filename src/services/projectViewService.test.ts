@@ -35,7 +35,6 @@ function getQfRoundActualDonationDetailsTestCases() {
       minimumValidUsdValue: 1,
       slug: new Date().getTime().toString(),
       eligibleNetworks: [
-        NETWORK_IDS.XDAI,
         NETWORK_IDS.OPTIMISTIC,
         NETWORK_IDS.POLYGON,
         NETWORK_IDS.MAIN_NET,
@@ -88,7 +87,6 @@ function getQfRoundActualDonationDetailsTestCases() {
       minimumValidUsdValue: 1,
       slug: new Date().getTime().toString(),
       eligibleNetworks: [
-        NETWORK_IDS.XDAI,
         NETWORK_IDS.OPTIMISTIC,
         NETWORK_IDS.POLYGON,
         NETWORK_IDS.MAIN_NET,
@@ -142,7 +140,6 @@ function getQfRoundActualDonationDetailsTestCases() {
       minimumValidUsdValue: 1,
       slug: new Date().getTime().toString(),
       eligibleNetworks: [
-        NETWORK_IDS.XDAI,
         NETWORK_IDS.OPTIMISTIC,
         NETWORK_IDS.POLYGON,
         NETWORK_IDS.MAIN_NET,
@@ -217,7 +214,6 @@ function getQfRoundActualDonationDetailsTestCases() {
       minimumValidUsdValue: 1,
       slug: new Date().getTime().toString(),
       eligibleNetworks: [
-        NETWORK_IDS.XDAI,
         NETWORK_IDS.OPTIMISTIC,
         NETWORK_IDS.POLYGON,
         NETWORK_IDS.MAIN_NET,

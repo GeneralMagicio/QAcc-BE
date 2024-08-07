@@ -644,15 +644,8 @@ export const donationTab = {
       transactionNetworkId: {
         availableValues: [
           { value: NETWORK_IDS.MAIN_NET, label: 'Mainnet' },
-          { value: NETWORK_IDS.XDAI, label: 'Xdai' },
           { value: NETWORK_IDS.GOERLI, label: 'Goerli' },
           { value: NETWORK_IDS.POLYGON, label: 'Polygon' },
-          { value: NETWORK_IDS.CELO, label: 'Celo' },
-          { value: NETWORK_IDS.CELO_ALFAJORES, label: 'Alfajores' },
-          { value: NETWORK_IDS.ARBITRUM_MAINNET, label: 'Arbitrum' },
-          { value: NETWORK_IDS.ARBITRUM_SEPOLIA, label: 'Arbitrum Sepolia' },
-          { value: NETWORK_IDS.BASE_MAINNET, label: 'Base' },
-          { value: NETWORK_IDS.BASE_SEPOLIA, label: 'Base Sepolia' },
           { value: NETWORK_IDS.ZKEVM_MAINNET, label: 'ZKEVM Mainnet' },
           { value: NETWORK_IDS.ZKEVM_CARDONA, label: 'ZKEVM Cardona' },
         ],

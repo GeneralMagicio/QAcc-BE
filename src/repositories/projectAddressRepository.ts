@@ -44,11 +44,6 @@ export const findRelatedAddressByWalletAddress = async (
   let query = ProjectAddress.createQueryBuilder('projectAddress');
 
   switch (chainType) {
-    case ChainType.SOLANA:
-      query = query.where(`address = :walletAddress`, {
-        walletAddress,
-      });
-      break;
     case ChainType.EVM:
     default:
       query = query.where(`LOWER(address) = :walletAddress`, {

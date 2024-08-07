@@ -22,8 +22,6 @@ export const detectAddressChainType = (
   address: string,
 ): ChainType | undefined => {
   switch (true) {
-    case isSolanaAddress(address):
-      return ChainType.SOLANA;
     case isEvmAddress(address):
       return ChainType.EVM;
     default:

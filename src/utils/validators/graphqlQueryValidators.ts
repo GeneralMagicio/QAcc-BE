@@ -19,8 +19,6 @@ const resourcePerDateRegex = new RegExp(
 
 const ethereumWalletAddressRegex = /^0x[a-fA-F0-9]{40}$/;
 const solanaWalletAddressRegex = /^[A-Za-z0-9]{43,44}$/;
-const solanaProgramIdRegex =
-  /^(11111111111111111111111111111111|[1-9A-HJ-NP-Za-km-z]{43,44})$/;
 const txHashRegex = /^0x[a-fA-F0-9]{64}$/;
 const solanaTxRegex = /^[A-Za-z0-9]{86,88}$/; // TODO: Is this enough? We are using the signature to fetch transactions
 // const tokenSymbolRegex = /^[a-zA-Z0-9]{2,10}$/; // OPTIMISTIC OP token is 2 chars long
@@ -95,9 +93,8 @@ export const createDonationQueryValidator = Joi.object({
     .required()
     .valid(...Object.values(NETWORK_IDS)),
   tokenAddress: Joi.when('chainType', {
-    is: ChainType.SOLANA,
-    then: Joi.string().pattern(solanaProgramIdRegex),
-    otherwise: Joi.string().pattern(ethereumWalletAddressRegex),
+    is: ChainType.EVM,
+    then: Joi.string().pattern(ethereumWalletAddressRegex),
   }).messages({
     'string.pattern.base': i18n.__(
       translationErrorMessagesKeys.INVALID_TOKEN_ADDRESS,
@@ -130,9 +127,8 @@ export const createDraftDonationQueryValidator = Joi.object({
     .required()
     .valid(...Object.values(NETWORK_IDS)),
   tokenAddress: Joi.when('chainType', {
-    is: ChainType.SOLANA,
-    then: Joi.string().pattern(solanaProgramIdRegex),
-    otherwise: Joi.string().pattern(ethereumWalletAddressRegex),
+    is: ChainType.EVM,
+    then: Joi.string().pattern(ethereumWalletAddressRegex),
   }).messages({
     'string.pattern.base': i18n.__(
       translationErrorMessagesKeys.INVALID_TOKEN_ADDRESS,
@@ -225,30 +221,16 @@ const managingFundsValidator = Joi.object({
       ),
       networkId: Joi.number()?.valid(
         0, // frontend may send 0 as a network id for solana, so we should allow it
-        NETWORK_IDS.SOLANA_MAINNET, // Solana
-        NETWORK_IDS.SOLANA_DEVNET, // Solana
-        NETWORK_IDS.SOLANA_TESTNET, // Solana
         NETWORK_IDS.MAIN_NET,
         NETWORK_IDS.ROPSTEN,
         NETWORK_IDS.GOERLI,
         NETWORK_IDS.POLYGON,
-        NETWORK_IDS.CELO,
-        NETWORK_IDS.CELO_ALFAJORES,
-        NETWORK_IDS.ARBITRUM_MAINNET,
-        NETWORK_IDS.ARBITRUM_SEPOLIA,
-        NETWORK_IDS.BASE_MAINNET,
-        NETWORK_IDS.BASE_SEPOLIA,
         NETWORK_IDS.ZKEVM_MAINNET,
         NETWORK_IDS.ZKEVM_CARDONA,
         NETWORK_IDS.OPTIMISTIC,
         NETWORK_IDS.OPTIMISM_SEPOLIA,
-        NETWORK_IDS.XDAI,
-        NETWORK_IDS.ETC,
-        NETWORK_IDS.MORDOR_ETC_TESTNET,
       ),
-      chainType: Joi.string()
-        .valid(ChainType.EVM, ChainType.SOLANA)
-        .default(ChainType.EVM),
+      chainType: Joi.string().valid(ChainType.EVM).default(ChainType.EVM),
     }),
   ),
 });

@@ -1,9 +1,7 @@
 import { ChainType } from '../../types/network';
-import { getSolanaTransactionInfoFromNetwork } from './solana/transactionService';
 import { getEvmTransactionInfoFromNetwork } from './evm/transactionService';
 import { i18n, translationErrorMessagesKeys } from '../../utils/errorMessages';
 import { logger } from '../../utils/logger';
-import { NETWORK_IDS } from '../../provider';
 
 export interface NetworkTransactionInfo {
   hash: string;
@@ -79,25 +77,15 @@ export function validateTransactionWithInputData(
 export async function getTransactionInfoFromNetwork(
   input: TransactionDetailInput,
 ): Promise<NetworkTransactionInfo> {
-  if (input.chainType === ChainType.SOLANA) {
-    return getSolanaTransactionInfoFromNetwork(input);
-  }
-
   // If chain is not Solana, it's EVM for sure
   return getEvmTransactionInfoFromNetwork(input);
-}
-
-export function getDefaultSolanaChainId(): number {
-  return Number(process.env.SOLANA_CHAIN_ID) || NETWORK_IDS.SOLANA_DEVNET;
 }
 
 export function getAppropriateNetworkId(params: {
   chainType?: ChainType;
   networkId: number;
 }): number {
-  return params.chainType === ChainType.SOLANA
-    ? getDefaultSolanaChainId()
-    : params.networkId;
+  return params.networkId;
 }
 
 // This function is used to compare two numbers with a delta as a margin of error

@@ -28,7 +28,6 @@ import {
   verifyForm,
   verifyMultipleForms,
 } from './projectVerificationRepository';
-import { ChainType } from '../types/network';
 
 describe(
   'createProjectVerificationForm test cases',
@@ -271,13 +270,12 @@ function updateManagingFundsOfProjectVerificationTestCases() {
         {
           title: 'secondAddress',
           address: generateRandomEtheriumAddress(),
-          networkId: 100,
+          networkId: 10,
         },
         {
           title: 'thirdAddress',
           address: generateRandomSolanaAddress(),
-          networkId: 0,
-          chainType: ChainType.SOLANA,
+          networkId: 1101,
         },
       ],
     };

@@ -39,7 +39,7 @@ const draftSaveTimeStampMS = Math.min(
   nativeDonationDraftSaveTime,
   erc20DonationDraftSaveTime,
 );
-const networkId = NETWORK_IDS.XDAI;
+const networkId = NETWORK_IDS.MAIN_NET;
 const anonymous = false;
 
 const sharedDonationData: Partial<DraftDonation> = {

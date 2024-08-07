@@ -36,7 +36,6 @@ function getActualMatchingFundTests() {
       minimumValidUsdValue: 1,
       slug: new Date().getTime().toString(),
       eligibleNetworks: [
-        NETWORK_IDS.XDAI,
         NETWORK_IDS.OPTIMISTIC,
         NETWORK_IDS.POLYGON,
         NETWORK_IDS.MAIN_NET,
@@ -622,7 +621,7 @@ function getActualMatchingFundTests() {
         valueUsd: 35,
         qfRoundId: qfRound.id,
         status: 'verified',
-        transactionNetworkId: NETWORK_IDS.ETC,
+        transactionNetworkId: NETWORK_IDS.POLYGON,
       },
       user2.id,
       project.id,

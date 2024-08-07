@@ -87,7 +87,7 @@ function removeRelatedAddressOfProjectTestCases() {
     assert.isOk(
       await findProjectRecipientAddressByNetworkId({
         projectId: project.id,
-        networkId: NETWORK_IDS.XDAI,
+        networkId: NETWORK_IDS.MAIN_NET,
       }),
     );
     await removeRecipientAddressOfProject({ project });
@@ -95,7 +95,7 @@ function removeRelatedAddressOfProjectTestCases() {
     assert.notOk(
       await findProjectRecipientAddressByNetworkId({
         projectId: project.id,
-        networkId: NETWORK_IDS.XDAI,
+        networkId: NETWORK_IDS.MAIN_NET,
       }),
     );
   });
@@ -110,7 +110,7 @@ function removeRelatedAddressOfProjectTestCases() {
     assert.isOk(
       await findProjectRecipientAddressByNetworkId({
         projectId: project.id,
-        networkId: NETWORK_IDS.XDAI,
+        networkId: NETWORK_IDS.MAIN_NET,
       }),
     );
     await removeRecipientAddressOfProject({ project });
@@ -147,7 +147,7 @@ function addNewProjectAddressTestCases() {
     const newAddress = generateRandomEtheriumAddress();
     const newRelatedAddress = await addNewProjectAddress({
       address: newAddress,
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       project,
       user,
       chainType: ChainType.EVM,
@@ -205,7 +205,7 @@ function addBulkNewProjectAddressTestCases() {
     await addBulkNewProjectAddress([
       {
         address: newAddress,
-        networkId: NETWORK_IDS.XDAI,
+        networkId: NETWORK_IDS.MAIN_NET,
         chainType: ChainType.EVM,
         project,
         user,
@@ -232,22 +232,22 @@ function addBulkNewProjectAddressTestCases() {
     await addBulkNewProjectAddress([
       {
         address: newAddress1,
-        networkId: NETWORK_IDS.XDAI,
+        networkId: NETWORK_IDS.MAIN_NET,
         chainType: ChainType.EVM,
         project,
         user,
       },
       {
         address: newAddress2,
-        networkId: NETWORK_IDS.XDAI,
+        networkId: NETWORK_IDS.MAIN_NET,
         chainType: ChainType.EVM,
         project,
         user,
       },
       {
         address: newAddress3,
-        networkId: 0,
-        chainType: ChainType.SOLANA,
+        networkId: NETWORK_IDS.MAIN_NET,
+        chainType: ChainType.EVM,
         project,
         user,
       },
@@ -276,10 +276,10 @@ function findProjectRecipientAddressByNetworkIdTestCases() {
     });
     const recipientAddress = await findProjectRecipientAddressByNetworkId({
       projectId: project.id,
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
     });
     assert.equal(recipientAddress?.address, walletAddress);
-    assert.equal(recipientAddress?.networkId, NETWORK_IDS.XDAI);
+    assert.equal(recipientAddress?.networkId, NETWORK_IDS.MAIN_NET);
     assert.isTrue(recipientAddress?.isRecipient);
   });
 }

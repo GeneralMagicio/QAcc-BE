@@ -18,7 +18,7 @@ describe('createDonation in apiGiv test cases', () => {
     const donationData = {
       toWalletAddress: project.walletAddress,
       currency: 'GIV',
-      transactionNetworkId: NETWORK_IDS.XDAI,
+      transactionNetworkId: NETWORK_IDS.MAIN_NET,
       fromWalletAddress: generateRandomEtheriumAddress(),
       amount: 100,
       priceUsd: 0.3,

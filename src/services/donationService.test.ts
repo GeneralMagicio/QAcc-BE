@@ -125,226 +125,6 @@ function syncDonationStatusWithBlockchainNetworkTestCases() {
     assert.equal(updateDonation.status, DONATION_STATUS.VERIFIED);
   });
 
-  it('should verify a Celo donation', async () => {
-    // https://celoscan.io/tx/0xa2a282cf6a7dec8b166aa52ac3d00fcd15a370d414615e29a168cfbb592e3637
-
-    const amount = 0.999;
-
-    const transactionInfo = {
-      txHash:
-        '0xa2a282cf6a7dec8b166aa52ac3d00fcd15a370d414615e29a168cfbb592e3637',
-      currency: 'CELO',
-      networkId: NETWORK_IDS.CELO,
-      fromAddress: '0xf6436829cf96ea0f8bc49d300c536fcc4f84c4ed',
-      toAddress: '0x95b75068b8bc97716a458bedcf4df1cace802c12',
-      amount,
-      timestamp: 1680072295 * 1000,
-    };
-    const user = await saveUserDirectlyToDb(transactionInfo.fromAddress);
-    const project = await saveProjectDirectlyToDb({
-      ...createProjectData(),
-      walletAddress: transactionInfo.toAddress,
-    });
-    const donation = await saveDonationDirectlyToDb(
-      {
-        amount: transactionInfo.amount,
-        transactionNetworkId: transactionInfo.networkId,
-        transactionId: transactionInfo.txHash,
-        currency: transactionInfo.currency,
-        fromWalletAddress: transactionInfo.fromAddress,
-        toWalletAddress: transactionInfo.toAddress,
-        valueUsd: 100,
-        anonymous: false,
-        createdAt: new Date(transactionInfo.timestamp),
-        status: DONATION_STATUS.PENDING,
-      },
-      user.id,
-      project.id,
-    );
-    const updateDonation = await syncDonationStatusWithBlockchainNetwork({
-      donationId: donation.id,
-    });
-    assert.isOk(updateDonation);
-    assert.equal(updateDonation.id, donation.id);
-    assert.isTrue(updateDonation.segmentNotified);
-    assert.equal(updateDonation.status, DONATION_STATUS.VERIFIED);
-  });
-  it('should verify a Arbitrum donation', async () => {
-    // https://arbiscan.io/tx/0xdaca7d68e784a60a6975fa9937abb6b287d7fe992ff806f8c375cb4c3b2152f3
-
-    const amount = 0.0038;
-
-    const transactionInfo = {
-      txHash:
-        '0xdaca7d68e784a60a6975fa9937abb6b287d7fe992ff806f8c375cb4c3b2152f3',
-      currency: 'ETH',
-      networkId: NETWORK_IDS.ARBITRUM_MAINNET,
-      fromAddress: '0x015e6fbce5119c32db66e7c544365749bb26cf8b',
-      toAddress: '0x5c66fef6ea22f37e7c1f7eee49e4e116d3fbfc68',
-      amount,
-      timestamp: 1708342629 * 1000,
-    };
-    const user = await saveUserDirectlyToDb(transactionInfo.fromAddress);
-    const project = await saveProjectDirectlyToDb({
-      ...createProjectData(),
-      walletAddress: transactionInfo.toAddress,
-    });
-    const donation = await saveDonationDirectlyToDb(
-      {
-        amount: transactionInfo.amount,
-        transactionNetworkId: transactionInfo.networkId,
-        transactionId: transactionInfo.txHash,
-        currency: transactionInfo.currency,
-        fromWalletAddress: transactionInfo.fromAddress,
-        toWalletAddress: transactionInfo.toAddress,
-        valueUsd: 100,
-        anonymous: false,
-        createdAt: new Date(transactionInfo.timestamp),
-        status: DONATION_STATUS.PENDING,
-      },
-      user.id,
-      project.id,
-    );
-    const updateDonation = await syncDonationStatusWithBlockchainNetwork({
-      donationId: donation.id,
-    });
-    assert.isOk(updateDonation);
-    assert.equal(updateDonation.id, donation.id);
-    assert.isTrue(updateDonation.segmentNotified);
-    assert.equal(updateDonation.status, DONATION_STATUS.VERIFIED);
-  });
-  it('should verify a erc20 Arbitrum donation', async () => {
-    // https://arbiscan.io/tx/0xd7ba5a5d8149432217a161559e357904965620b58e776c4482b8b501e092e495
-
-    const amount = 999.2;
-
-    const transactionInfo = {
-      txHash:
-        '0xd7ba5a5d8149432217a161559e357904965620b58e776c4482b8b501e092e495',
-      currency: 'USDT',
-      networkId: NETWORK_IDS.ARBITRUM_MAINNET,
-      fromAddress: '0x62383739d68dd0f844103db8dfb05a7eded5bbe6',
-      toAddress: '0x513b8c84fb6e36512b641b67de55a18704118fe7',
-      amount,
-      timestamp: 1708343905 * 1000,
-    };
-    const user = await saveUserDirectlyToDb(transactionInfo.fromAddress);
-    const project = await saveProjectDirectlyToDb({
-      ...createProjectData(),
-      walletAddress: transactionInfo.toAddress,
-    });
-    const donation = await saveDonationDirectlyToDb(
-      {
-        amount: transactionInfo.amount,
-        transactionNetworkId: transactionInfo.networkId,
-        transactionId: transactionInfo.txHash,
-        currency: transactionInfo.currency,
-        fromWalletAddress: transactionInfo.fromAddress,
-        toWalletAddress: transactionInfo.toAddress,
-        valueUsd: 1000,
-        anonymous: false,
-        createdAt: new Date(transactionInfo.timestamp),
-        status: DONATION_STATUS.PENDING,
-      },
-      user.id,
-      project.id,
-    );
-    const updateDonation = await syncDonationStatusWithBlockchainNetwork({
-      donationId: donation.id,
-    });
-    assert.isOk(updateDonation);
-    assert.equal(updateDonation.id, donation.id);
-    assert.isTrue(updateDonation.segmentNotified);
-    assert.equal(updateDonation.status, DONATION_STATUS.VERIFIED);
-  });
-  it('should verify a Arbitrum Sepolia donation', async () => {
-    // https://sepolia.arbiscan.io/tx/0x25f17541ccb7248d931f2a1e11058a51ffb4db4968ed3e1d4a019ddc2d44802c
-
-    const amount = 0.0069;
-
-    const transactionInfo = {
-      txHash:
-        '0x25f17541ccb7248d931f2a1e11058a51ffb4db4968ed3e1d4a019ddc2d44802c',
-      currency: 'ETH',
-      networkId: NETWORK_IDS.ARBITRUM_SEPOLIA,
-      fromAddress: '0xefc58dbf0e606c327868b55334998aacb27f9ef2',
-      toAddress: '0xc11c479473cd06618fc75816dd6b56be4ac80efd',
-      amount,
-      timestamp: 1708344659 * 1000,
-    };
-    const user = await saveUserDirectlyToDb(transactionInfo.fromAddress);
-    const project = await saveProjectDirectlyToDb({
-      ...createProjectData(),
-      walletAddress: transactionInfo.toAddress,
-    });
-    const donation = await saveDonationDirectlyToDb(
-      {
-        amount: transactionInfo.amount,
-        transactionNetworkId: transactionInfo.networkId,
-        transactionId: transactionInfo.txHash,
-        currency: transactionInfo.currency,
-        fromWalletAddress: transactionInfo.fromAddress,
-        toWalletAddress: transactionInfo.toAddress,
-        valueUsd: 100,
-        anonymous: false,
-        createdAt: new Date(transactionInfo.timestamp),
-        status: DONATION_STATUS.PENDING,
-      },
-      user.id,
-      project.id,
-    );
-    const updateDonation = await syncDonationStatusWithBlockchainNetwork({
-      donationId: donation.id,
-    });
-    assert.isOk(updateDonation);
-    assert.equal(updateDonation.id, donation.id);
-    assert.isTrue(updateDonation.segmentNotified);
-    assert.equal(updateDonation.status, DONATION_STATUS.VERIFIED);
-  });
-  it('should verify a erc20 Arbitrum Sepolia donation', async () => {
-    // https://sepolia.arbiscan.io/tx/0x5bcce1bac54ee92ff28e9913e8a002e6e8efc8e8632fdb8e6ebaa16d8c6fd4cb
-
-    const amount = 100;
-
-    const transactionInfo = {
-      txHash:
-        '0x5bcce1bac54ee92ff28e9913e8a002e6e8efc8e8632fdb8e6ebaa16d8c6fd4cb',
-      currency: 'cETH',
-      networkId: NETWORK_IDS.ARBITRUM_SEPOLIA,
-      fromAddress: '0x6a446d9d0d153aa07811de2ac8096b87baad305b',
-      toAddress: '0xf888186663aae1600282c6fb23b764a61937b913',
-      amount,
-      timestamp: 1708344801 * 1000,
-    };
-    const user = await saveUserDirectlyToDb(transactionInfo.fromAddress);
-    const project = await saveProjectDirectlyToDb({
-      ...createProjectData(),
-      walletAddress: transactionInfo.toAddress,
-    });
-    const donation = await saveDonationDirectlyToDb(
-      {
-        amount: transactionInfo.amount,
-        transactionNetworkId: transactionInfo.networkId,
-        transactionId: transactionInfo.txHash,
-        currency: transactionInfo.currency,
-        fromWalletAddress: transactionInfo.fromAddress,
-        toWalletAddress: transactionInfo.toAddress,
-        valueUsd: 1000,
-        anonymous: false,
-        createdAt: new Date(transactionInfo.timestamp),
-        status: DONATION_STATUS.PENDING,
-      },
-      user.id,
-      project.id,
-    );
-    const updateDonation = await syncDonationStatusWithBlockchainNetwork({
-      donationId: donation.id,
-    });
-    assert.isOk(updateDonation);
-    assert.equal(updateDonation.id, donation.id);
-    assert.isTrue(updateDonation.segmentNotified);
-    assert.equal(updateDonation.status, DONATION_STATUS.VERIFIED);
-  });
   it('should verify a Optimistic donation', async () => {
     // https://optimistic.etherscan.io/tx/0xc645bd4ebcb1cb249be4b3e4dad46075c973fd30649a39f27f5328ded15074e7
 
@@ -477,50 +257,6 @@ function syncDonationStatusWithBlockchainNetworkTestCases() {
   //   assert.isTrue(updateDonation.segmentNotified);
   // });
 
-  it('should verify a gnosis donation', async () => {
-    // https://blockscout.com/xdai/mainnet/tx/0x57b913ac40b2027a08655bdb495befc50612b72a9dd1f2be81249c970503c734
-
-    const transactionInfo = {
-      txHash:
-        '0x57b913ac40b2027a08655bdb495befc50612b72a9dd1f2be81249c970503c734',
-      currency: 'XDAI',
-      networkId: NETWORK_IDS.XDAI,
-      fromAddress: '0xb20a327c9b4da091f454b1ce0e2e4dc5c128b5b4',
-      toAddress: '0x7ee789b7e6fa20eab7ecbce44626afa7f58a94b7',
-      amount: 0.001,
-      timestamp: 1621241124 * 1000,
-    };
-
-    const user = await saveUserDirectlyToDb(transactionInfo.fromAddress);
-    const project = await saveProjectDirectlyToDb({
-      ...createProjectData(),
-      walletAddress: transactionInfo.toAddress,
-    });
-    const donation = await saveDonationDirectlyToDb(
-      {
-        amount: transactionInfo.amount,
-        transactionNetworkId: transactionInfo.networkId,
-        transactionId: transactionInfo.txHash,
-        currency: transactionInfo.currency,
-        fromWalletAddress: transactionInfo.fromAddress,
-        toWalletAddress: transactionInfo.toAddress,
-        valueUsd: 100,
-        anonymous: false,
-        createdAt: new Date(transactionInfo.timestamp),
-        status: DONATION_STATUS.PENDING,
-      },
-      user.id,
-      project.id,
-    );
-    const updateDonation = await syncDonationStatusWithBlockchainNetwork({
-      donationId: donation.id,
-    });
-    assert.isOk(updateDonation);
-    assert.equal(updateDonation.id, donation.id);
-    assert.equal(updateDonation.status, DONATION_STATUS.VERIFIED);
-    assert.isTrue(updateDonation.segmentNotified);
-  });
-
   it('should change status to failed when donation fromAddress is different with transaction fromAddress', async () => {
     // https://blockscout.com/xdai/mainnet/tx/0x99e70642fe1aa03cb2db35c3e3909466e66b233840b7b1e0dd47296c878c16b4
 
@@ -528,7 +264,7 @@ function syncDonationStatusWithBlockchainNetworkTestCases() {
       txHash:
         '0x99e70642fe1aa03cb2db35c3e3909466e66b233840b7b1e0dd47296c878c16b4',
       currency: 'HNY',
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       fromAddress: '0x826976d7c600d45fb8287ca1d7c76fc8eb732000',
       toAddress: '0x5A5a0732c1231D99DB8FFcA38DbEf1c8316fD3E1',
       amount: 0.001,
@@ -574,7 +310,7 @@ function syncDonationStatusWithBlockchainNetworkTestCases() {
       txHash:
         '0xe3b05b89f71b63e385c4971be872a9becd18f696b1e8abaddbc29c1cce59da63',
       currency: 'GIV',
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       fromAddress: '0x89E12F054526B985188b946063dDc874a62fEd45',
       toAddress: '0xECb179EA5910D652eDa6988E919c7930F5Ffcf00',
       amount: 1500,
@@ -620,7 +356,7 @@ function syncDonationStatusWithBlockchainNetworkTestCases() {
       txHash:
         '0x00aef89fc40cea0cc0cb7ae5ac18c0e586dccb200b230a9caabca0e08ff7a36b',
       currency: 'USDC',
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       fromAddress: '0x826976d7c600d45fb8287ca1d7c76fc8eb732030',
       toAddress: '0x87f1c862c166b0ceb79da7ad8d0864d53468d076',
       amount: 1,
@@ -660,20 +396,6 @@ function syncDonationStatusWithBlockchainNetworkTestCases() {
 }
 
 function isProjectAcceptTokenTestCases() {
-  it('should return true for giveth projects accepting GIV on xdai', async () => {
-    const token = await Token.findOne({
-      where: {
-        symbol: 'GIV',
-        networkId: NETWORK_IDS.XDAI,
-      },
-    });
-    const project = await saveProjectDirectlyToDb(createProjectData());
-    const result = await isTokenAcceptableForProject({
-      projectId: project.id,
-      tokenId: token?.id as number,
-    });
-    assert.isTrue(result);
-  });
   it('should return true for giveth projects accepting GIV on mainnet', async () => {
     const token = await Token.findOne({
       where: {
@@ -682,37 +404,6 @@ function isProjectAcceptTokenTestCases() {
       },
     });
     const project = await saveProjectDirectlyToDb(createProjectData());
-    const result = await isTokenAcceptableForProject({
-      projectId: project.id,
-      tokenId: token?.id as number,
-    });
-    assert.isTrue(result);
-  });
-  it('should return true for giveth projects accepting WETH on xdai', async () => {
-    const token = await Token.findOne({
-      where: {
-        symbol: 'WETH',
-        networkId: NETWORK_IDS.XDAI,
-      },
-    });
-    const project = await saveProjectDirectlyToDb(createProjectData());
-    const result = await isTokenAcceptableForProject({
-      projectId: project.id,
-      tokenId: token?.id as number,
-    });
-    assert.isTrue(result);
-  });
-  it('should return true for trace projects accepting GIV on xdai', async () => {
-    const token = await Token.findOne({
-      where: {
-        symbol: 'GIV',
-        networkId: NETWORK_IDS.XDAI,
-      },
-    });
-    const project = await saveProjectDirectlyToDb({
-      ...createProjectData(),
-      organizationLabel: ORGANIZATION_LABELS.TRACE,
-    });
     const result = await isTokenAcceptableForProject({
       projectId: project.id,
       tokenId: token?.id as number,
@@ -735,74 +426,6 @@ function isProjectAcceptTokenTestCases() {
       tokenId: token?.id as number,
     });
     assert.isTrue(result);
-  });
-  it('should return true for trace projects accepting WETH on xdai', async () => {
-    const token = await Token.findOne({
-      where: {
-        symbol: 'WETH',
-        networkId: NETWORK_IDS.XDAI,
-      },
-    });
-    const project = await saveProjectDirectlyToDb({
-      ...createProjectData(),
-      organizationLabel: ORGANIZATION_LABELS.TRACE,
-    });
-    const result = await isTokenAcceptableForProject({
-      projectId: project.id,
-      tokenId: token?.id as number,
-    });
-    assert.isTrue(result);
-  });
-  it('should return true for endaoment projects accepting ETH on mainnet', async () => {
-    const token = await Token.findOne({
-      where: {
-        symbol: 'ETH',
-        networkId: NETWORK_IDS.MAIN_NET,
-      },
-    });
-    const project = await saveProjectDirectlyToDb({
-      ...createProjectData(),
-      organizationLabel: ORGANIZATION_LABELS.ENDAOMENT,
-    });
-    const result = await isTokenAcceptableForProject({
-      projectId: project.id,
-      tokenId: token?.id as number,
-    });
-    assert.isTrue(result);
-  });
-  it('should return false for endaoment projects accepting GIV on xdai', async () => {
-    const token = await Token.findOne({
-      where: {
-        symbol: 'GIV',
-        networkId: NETWORK_IDS.XDAI,
-      },
-    });
-    const project = await saveProjectDirectlyToDb({
-      ...createProjectData(),
-      organizationLabel: ORGANIZATION_LABELS.ENDAOMENT,
-    });
-    const result = await isTokenAcceptableForProject({
-      projectId: project.id,
-      tokenId: token?.id as number,
-    });
-    assert.isFalse(result);
-  });
-  it('should return false for endaoment projects accepting XDAI on xdai', async () => {
-    const token = await Token.findOne({
-      where: {
-        symbol: 'XDAI',
-        networkId: NETWORK_IDS.XDAI,
-      },
-    });
-    const project = await saveProjectDirectlyToDb({
-      ...createProjectData(),
-      organizationLabel: ORGANIZATION_LABELS.ENDAOMENT,
-    });
-    const result = await isTokenAcceptableForProject({
-      projectId: project.id,
-      tokenId: token?.id as number,
-    });
-    assert.isFalse(result);
   });
   it('should return false for endaoment projects accepting GIV on mainnet', async () => {
     const token = await Token.findOne({

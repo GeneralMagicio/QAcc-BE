@@ -56,7 +56,7 @@ function createDraftDonationTestCases() {
     safeTransactionId = generateRandomEvmTxHash();
     donationData = {
       projectId: project.id,
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       amount: 10,
       token: 'GIV',
       referrerId,
@@ -86,7 +86,7 @@ function createDraftDonationTestCases() {
     });
 
     expect(draftDonation).deep.contain({
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       chainType: ChainType.EVM,
       status: DRAFT_DONATION_STATUS.PENDING,
       toWalletAddress: project.walletAddress!,
@@ -195,7 +195,7 @@ function createDraftRecurringDonationTestCases() {
     accessToken = await generateTestAccessToken(user.id);
     donationData = {
       projectId: project.id,
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       flowRate: '100',
       currency: 'GIV',
       toAddress: project.walletAddress,
@@ -238,7 +238,7 @@ function createDraftRecurringDonationTestCases() {
       donationData: {
         donorId: user.id,
         projectId: project.id,
-        networkId: NETWORK_IDS.XDAI,
+        networkId: NETWORK_IDS.MAIN_NET,
         currency: 'GIV',
       },
     });

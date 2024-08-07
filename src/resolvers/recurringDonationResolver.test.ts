@@ -355,7 +355,7 @@ function updateRecurringDonationTestCases() {
   it('should allow to end recurring donation when its active, and archive when its ended', async () => {
     const transactionInfo = {
       txHash: generateRandomEvmTxHash(),
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       flowRate: '1000',
       fromAddress: generateRandomEtheriumAddress(),
       toAddress: generateRandomEtheriumAddress(),
@@ -440,7 +440,7 @@ function updateRecurringDonationTestCases() {
   it('should not allow to archive  recurring donation when its not ended', async () => {
     const transactionInfo = {
       txHash: generateRandomEvmTxHash(),
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       flowRate: '1000',
       fromAddress: generateRandomEtheriumAddress(),
       toAddress: generateRandomEtheriumAddress(),
@@ -501,7 +501,7 @@ function updateRecurringDonationTestCases() {
   it('should not change isArchived when its already true and we dont send it', async () => {
     const transactionInfo = {
       txHash: generateRandomEvmTxHash(),
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       flowRate: '1000',
       fromAddress: generateRandomEtheriumAddress(),
       toAddress: generateRandomEtheriumAddress(),
@@ -561,7 +561,7 @@ function updateRecurringDonationTestCases() {
   it('should not change isArchived when its already false and we dont send it', async () => {
     const transactionInfo = {
       txHash: generateRandomEvmTxHash(),
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       flowRate: '1000',
       fromAddress: generateRandomEtheriumAddress(),
       toAddress: generateRandomEtheriumAddress(),
@@ -623,7 +623,7 @@ function updateRecurringDonationTestCases() {
     const currency = 'GIV';
     const transactionInfo = {
       txHash: generateRandomEvmTxHash(),
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       amount: 1,
       fromAddress: generateRandomEtheriumAddress(),
       toAddress: generateRandomEtheriumAddress(),
@@ -689,7 +689,7 @@ function updateRecurringDonationTestCases() {
     const currency = 'GIV';
     const transactionInfo = {
       txHash: generateRandomEvmTxHash(),
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       amount: 1,
       fromAddress: generateRandomEtheriumAddress(),
       toAddress: generateRandomEtheriumAddress(),
@@ -769,7 +769,7 @@ function updateRecurringDonationTestCases() {
     const currency = 'GIV';
     const transactionInfo = {
       txHash: generateRandomEvmTxHash(),
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       amount: 1,
       fromAddress: generateRandomEtheriumAddress(),
       toAddress: generateRandomEtheriumAddress(),
@@ -845,7 +845,7 @@ function updateRecurringDonationTestCases() {
     const currency = 'GIV';
     const transactionInfo = {
       txHash: generateRandomEvmTxHash(),
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       amount: 1,
       fromAddress: generateRandomEtheriumAddress(),
       toAddress: generateRandomEtheriumAddress(),
@@ -915,7 +915,7 @@ function updateRecurringDonationTestCases() {
     const currency = 'GIV';
     const transactionInfo = {
       txHash: generateRandomEvmTxHash(),
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       amount: 1,
       fromAddress: generateRandomEtheriumAddress(),
       toAddress: generateRandomEtheriumAddress(),
@@ -985,7 +985,7 @@ function updateRecurringDonationTestCases() {
     const currency = 'GIV';
     const transactionInfo = {
       txHash: generateRandomEvmTxHash(),
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       amount: 1,
       fromAddress: generateRandomEtheriumAddress(),
       toAddress: generateRandomEtheriumAddress(),
@@ -1110,7 +1110,7 @@ function updateRecurringDonationByIdTestCases() {
   it('should allow to end recurring donation when its active, and archive when its ended', async () => {
     const transactionInfo = {
       txHash: generateRandomEvmTxHash(),
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       flowRate: '1000',
       fromAddress: generateRandomEtheriumAddress(),
       toAddress: generateRandomEtheriumAddress(),
@@ -1195,7 +1195,7 @@ function updateRecurringDonationByIdTestCases() {
   it('should not allow to archive  recurring donation when its not ended', async () => {
     const transactionInfo = {
       txHash: generateRandomEvmTxHash(),
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       flowRate: '1000',
       fromAddress: generateRandomEtheriumAddress(),
       toAddress: generateRandomEtheriumAddress(),
@@ -1256,7 +1256,7 @@ function updateRecurringDonationByIdTestCases() {
   it('should not change isArchived when its already true and we dont send it', async () => {
     const transactionInfo = {
       txHash: generateRandomEvmTxHash(),
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       flowRate: '1000',
       fromAddress: generateRandomEtheriumAddress(),
       toAddress: generateRandomEtheriumAddress(),
@@ -1316,7 +1316,7 @@ function updateRecurringDonationByIdTestCases() {
   it('should not change isArchived when its already false and we dont send it', async () => {
     const transactionInfo = {
       txHash: generateRandomEvmTxHash(),
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       flowRate: '1000',
       fromAddress: generateRandomEtheriumAddress(),
       toAddress: generateRandomEtheriumAddress(),
@@ -1378,7 +1378,7 @@ function updateRecurringDonationByIdTestCases() {
     const currency = 'GIV';
     const transactionInfo = {
       txHash: generateRandomEvmTxHash(),
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       amount: 1,
       fromAddress: generateRandomEtheriumAddress(),
       toAddress: generateRandomEtheriumAddress(),
@@ -1444,7 +1444,7 @@ function updateRecurringDonationByIdTestCases() {
     const currency = 'GIV';
     const transactionInfo = {
       txHash: generateRandomEvmTxHash(),
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       amount: 1,
       fromAddress: generateRandomEtheriumAddress(),
       toAddress: generateRandomEtheriumAddress(),
@@ -1524,7 +1524,7 @@ function updateRecurringDonationByIdTestCases() {
     const currency = 'GIV';
     const transactionInfo = {
       txHash: generateRandomEvmTxHash(),
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       amount: 1,
       fromAddress: generateRandomEtheriumAddress(),
       toAddress: generateRandomEtheriumAddress(),
@@ -1595,7 +1595,7 @@ function updateRecurringDonationByIdTestCases() {
     const currency = 'GIV';
     const transactionInfo = {
       txHash: generateRandomEvmTxHash(),
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       amount: 1,
       fromAddress: generateRandomEtheriumAddress(),
       toAddress: generateRandomEtheriumAddress(),
@@ -1666,7 +1666,7 @@ function updateRecurringDonationByIdTestCases() {
     const currency = 'GIV';
     const transactionInfo = {
       txHash: generateRandomEvmTxHash(),
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       amount: 1,
       fromAddress: generateRandomEtheriumAddress(),
       toAddress: generateRandomEtheriumAddress(),
@@ -2841,7 +2841,7 @@ function updateRecurringDonationStatusTestCases() {
   it('should donation status remain pending after calling without sending status (we assume its not mined so far)', async () => {
     const transactionInfo = {
       txHash: generateRandomEvmTxHash(),
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       flowRate: '1000',
       fromAddress: generateRandomEtheriumAddress(),
       toAddress: generateRandomEtheriumAddress(),
@@ -2890,7 +2890,7 @@ function updateRecurringDonationStatusTestCases() {
   it('should update donation status to failed, tx is not mined and donor says it failed', async () => {
     const transactionInfo = {
       txHash: generateRandomEvmTxHash(),
-      networkId: NETWORK_IDS.XDAI,
+      networkId: NETWORK_IDS.MAIN_NET,
       flowRate: '200',
       fromAddress: generateRandomEtheriumAddress(),
       toAddress: generateRandomEtheriumAddress(),

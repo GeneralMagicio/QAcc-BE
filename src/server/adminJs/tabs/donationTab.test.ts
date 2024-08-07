@@ -6,11 +6,7 @@ import {
   saveUserDirectlyToDb,
 } from '../../../../test/testUtils';
 import { NETWORK_IDS } from '../../../provider';
-import {
-  Donation,
-  DONATION_STATUS,
-  DONATION_TYPES,
-} from '../../../entities/donation';
+import { Donation, DONATION_STATUS } from '../../../entities/donation';
 import {
   createDonation,
   FillPricesForDonationsWithoutPrice,
@@ -105,7 +101,7 @@ function createDonationTestCases() {
           recordIds: '',
         },
         payload: {
-          transactionNetworkId: NETWORK_IDS.XDAI,
+          transactionNetworkId: NETWORK_IDS.MAIN_NET,
           transactionId: txHash,
           priceUsd: ethPrice,
           txType: 'csvAirDrop',
@@ -193,71 +189,6 @@ function createDonationTestCases() {
       assert.equal(
         donation.createdAt.getTime(),
         new Date('2022-02-28T00:05:35.000Z').getTime(),
-      );
-    }
-  });
-  it('Should create donations for gnosis safe', async () => {
-    // https://blockscout.com/xdai/mainnet/tx/0x43f82708d1608aa9355c0738659c658b138d54f618e3322e33a4410af48c200b
-
-    const tokenPrice = 1;
-    const txHash =
-      '0x43f82708d1608aa9355c0738659c658b138d54f618e3322e33a4410af48c200b';
-    const firstProjectAddress = '0x10E1439455BD2624878b243819E31CfEE9eb721C';
-    const firstProject = await saveProjectDirectlyToDb({
-      ...createProjectData(),
-      walletAddress: firstProjectAddress,
-    });
-    await createDonation(
-      {
-        query: {
-          recordIds: '',
-        },
-        payload: {
-          transactionNetworkId: NETWORK_IDS.XDAI,
-          transactionId: txHash,
-          priceUsd: tokenPrice,
-          txType: 'gnosisSafe',
-          segmentNotified: true,
-          isProjectVerified: true,
-        },
-      },
-      {
-        send: () => {
-          //
-        },
-      },
-    );
-
-    const firstDonation = await Donation.findOne({
-      where: {
-        transactionId: txHash,
-        toWalletAddress: firstProjectAddress.toLowerCase(),
-      },
-    });
-    assert.isOk(firstDonation);
-    assert.equal(firstDonation?.projectId, firstProject.id);
-
-    const allTxDonations = await Donation.find({
-      where: {
-        transactionId: txHash,
-      },
-    });
-    assert.equal(allTxDonations.length, 1);
-    for (const donation of allTxDonations) {
-      assert.equal(donation.donationType, DONATION_TYPES.GNOSIS_SAFE);
-      assert.equal(donation.status, DONATION_STATUS.VERIFIED);
-      assert.equal(donation.priceUsd, tokenPrice);
-      assert.equal(donation.segmentNotified, true);
-      assert.equal(donation.isProjectVerified, true);
-      assert.equal(donation.amount, 5);
-      assert.equal(
-        donation.fromWalletAddress.toLowerCase(),
-        '0x5f0253950c0a7715CBA25153a6ED5eBcFFEDe48e'.toLowerCase(),
-      );
-      assert.equal(donation.currency, 'USDC');
-      assert.equal(
-        donation.createdAt.getTime(),
-        new Date('2022-07-04T16:55:30.000Z').getTime(),
       );
     }
   });

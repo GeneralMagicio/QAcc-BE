@@ -23,11 +23,14 @@ function createBackupDonationTestCases() {
       loginType: 'wallet',
       firstName: 'first name',
     }).save();
-    const token = await findTokenByNetworkAndSymbol(NETWORK_IDS.XDAI, 'GIV');
+    const token = await findTokenByNetworkAndSymbol(
+      NETWORK_IDS.MAIN_NET,
+      'GIV',
+    );
 
     const donation = await createBackupDonation({
       projectId: project.id,
-      chainId: NETWORK_IDS.XDAI,
+      chainId: NETWORK_IDS.MAIN_NET,
       txHash: generateRandomEvmTxHash(),
       nonce: 1,
       amount: 10,
@@ -35,7 +38,7 @@ function createBackupDonationTestCases() {
       token: {
         symbol: token.symbol,
         address: token.address,
-        networkId: NETWORK_IDS.XDAI,
+        networkId: NETWORK_IDS.MAIN_NET,
       },
       anonymous: false,
       symbol: 'GIV',
@@ -57,12 +60,15 @@ function createBackupDonationTestCases() {
       loginType: 'wallet',
       firstName: 'first name',
     }).save();
-    const token = await findTokenByNetworkAndSymbol(NETWORK_IDS.XDAI, 'GIV');
+    const token = await findTokenByNetworkAndSymbol(
+      NETWORK_IDS.MAIN_NET,
+      'GIV',
+    );
 
     const badFunc = async () => {
       await createBackupDonation({
         projectId: 99999999,
-        chainId: NETWORK_IDS.XDAI,
+        chainId: NETWORK_IDS.MAIN_NET,
         txHash: generateRandomEvmTxHash(),
         nonce: 1,
         amount: 10,
@@ -70,7 +76,7 @@ function createBackupDonationTestCases() {
         token: {
           symbol: token.symbol,
           address: token.address,
-          networkId: NETWORK_IDS.XDAI,
+          networkId: NETWORK_IDS.MAIN_NET,
         },
         anonymous: false,
         symbol: 'GIV',

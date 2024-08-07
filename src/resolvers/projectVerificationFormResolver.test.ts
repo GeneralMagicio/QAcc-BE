@@ -4,7 +4,6 @@ import {
   createProjectData,
   generateConfirmationEmailToken,
   generateRandomEtheriumAddress,
-  generateRandomSolanaAddress,
   generateTestAccessToken,
   graphqlUrl,
   saveProjectDirectlyToDb,
@@ -39,8 +38,6 @@ import { NETWORK_IDS } from '../provider';
 import { countriesList, generateRandomString } from '../utils/utils';
 import { createSocialProfile } from '../repositories/socialProfileRepository';
 import { SOCIAL_NETWORKS } from '../entities/socialProfile';
-import { ChainType } from '../types/network';
-import { getDefaultSolanaChainId } from '../services/chains';
 
 describe(
   'createProjectVerification test cases',
@@ -283,11 +280,6 @@ function updateProjectVerificationFormMutationTestCases() {
       },
       {
         address: generateRandomEtheriumAddress(),
-        networkId: NETWORK_IDS.XDAI,
-        title: 'test title',
-      },
-      {
-        address: generateRandomEtheriumAddress(),
         networkId: NETWORK_IDS.OPTIMISTIC,
         title: 'test title',
       },
@@ -303,36 +295,6 @@ function updateProjectVerificationFormMutationTestCases() {
       },
       {
         address: generateRandomEtheriumAddress(),
-        networkId: NETWORK_IDS.CELO_ALFAJORES,
-        title: 'test title',
-      },
-      {
-        address: generateRandomEtheriumAddress(),
-        networkId: NETWORK_IDS.CELO,
-        title: 'test title',
-      },
-      {
-        address: generateRandomEtheriumAddress(),
-        networkId: NETWORK_IDS.ARBITRUM_MAINNET,
-        title: 'test title',
-      },
-      {
-        address: generateRandomEtheriumAddress(),
-        networkId: NETWORK_IDS.ARBITRUM_SEPOLIA,
-        title: 'test title',
-      },
-      {
-        address: generateRandomEtheriumAddress(),
-        networkId: NETWORK_IDS.BASE_MAINNET,
-        title: 'test title',
-      },
-      {
-        address: generateRandomEtheriumAddress(),
-        networkId: NETWORK_IDS.BASE_SEPOLIA,
-        title: 'test title',
-      },
-      {
-        address: generateRandomEtheriumAddress(),
         networkId: NETWORK_IDS.ZKEVM_MAINNET,
         title: 'test title',
       },
@@ -340,30 +302,6 @@ function updateProjectVerificationFormMutationTestCases() {
         address: generateRandomEtheriumAddress(),
         networkId: NETWORK_IDS.ZKEVM_CARDONA,
         title: 'test title',
-      },
-      {
-        address: generateRandomEtheriumAddress(),
-        networkId: NETWORK_IDS.ETC,
-        title: 'test title',
-      },
-      {
-        address: generateRandomEtheriumAddress(),
-        networkId: NETWORK_IDS.MORDOR_ETC_TESTNET,
-        title: 'test title',
-        chainType: ChainType.EVM,
-      },
-      // {
-      //   address: generateRandomSolanaAddress(),
-      //   networkId: NETWORK_IDS.SOLANA_MAINNET,
-      //   title: 'test title',
-      //   chainType: ChainType.SOLANA,
-      // },
-      {
-        address: generateRandomSolanaAddress(),
-        // frontend may not send networkId for solana
-        networkId: 0,
-        title: 'test title',
-        chainType: ChainType.SOLANA,
       },
     ],
   };
@@ -779,14 +717,6 @@ function updateProjectVerificationFormMutationTestCases() {
       result.data.data.updateProjectVerificationForm.managingFunds
         .relatedAddresses[0].address,
       managingFunds.relatedAddresses[0].address,
-    );
-
-    // Make sure that networkId would be getDefaultSolanaChainId() instead of 0
-    assert.equal(
-      result.data.data.updateProjectVerificationForm.managingFunds.relatedAddresses.find(
-        address => address.chainType === ChainType.SOLANA,
-      ).networkId,
-      getDefaultSolanaChainId(),
     );
 
     assert.equal(
