@@ -100,7 +100,6 @@ import { findCampaignBySlug } from '../repositories/campaignRepository';
 import { Campaign } from '../entities/campaign';
 import { FeaturedUpdate } from '../entities/featuredUpdate';
 import { PROJECT_UPDATE_CONTENT_MAX_LENGTH } from '../constants/validators';
-import { calculateGivbackFactor } from '../services/givbackService';
 import { ProjectBySlugResponse } from './types/projectResolver';
 import { ChainType } from '../types/network';
 import { findActiveQfRound } from '../repositories/qfRoundRepository';
@@ -1015,10 +1014,6 @@ export class ProjectResolver {
       if (verificationForm) {
         (project as Project).verificationFormStatus = verificationForm?.status;
       }
-    }
-    if (fields.givbackFactor) {
-      const { givbackFactor } = await calculateGivbackFactor(project!.id);
-      return { ...project, givbackFactor };
     }
     // We know that we have the project because if we reach this line means minimalProject is not null
     return project;
