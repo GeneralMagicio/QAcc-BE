@@ -1090,7 +1090,7 @@ export const getOrttoPersonAttributes = (params: {
     'str::last': lastName || '',
     'str::email': email || '',
   };
-  // todo: in Qacc, we should not using userID
+  // in Qacc, we should not use userID, and actually we don't use it
   if (isProduction) {
     // On production, we should update Ortto user profile based on user-id to avoid touching real users data
     fields['str:cm:user-id'] = userId;
