@@ -26,3 +26,9 @@ jobs:
 
       - name: Run Inverter sync script
         run: npm run sync:inverter:production
+        env:
+          TYPEORM_DATABASE_HOST: ${{ secrets.STAGING_DATABASE_HOST }}
+          TYPEORM_DATABASE_PORT: ${{ secrets.STAGING_DATABASE_PORT }}
+          TYPEORM_DATABASE_USER: ${{ secrets.STAGING_DATABASE_USER }}
+          TYPEORM_DATABASE_PASSWORD: ${{ secrets.STAGING_DATABASE_PASSWORD }}
+          TYPEORM_DATABASE_NAME: ${{ secrets.STAGING_DATABASE_NAME }}
