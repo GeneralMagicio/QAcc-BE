@@ -32,3 +32,5 @@ jobs:
           TYPEORM_DATABASE_USER: ${{ secrets.STAGING_DATABASE_USER }}
           TYPEORM_DATABASE_PASSWORD: ${{ secrets.STAGING_DATABASE_PASSWORD }}
           TYPEORM_DATABASE_NAME: ${{ secrets.STAGING_DATABASE_NAME }}
+          REDIS_HOST: ${{ secrets.STAGING_REDIS_HOST }}
+          REDIS_PORT: ${{ secrets.STAGING_REDIS_PORT }}
