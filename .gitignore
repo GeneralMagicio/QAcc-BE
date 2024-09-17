@@ -17,6 +17,7 @@ coverage
 config/*
 !config/example.env
 !config/test.env
+!config/inverter-production.env
 .vscode/settings.json
 
 *.rdb
