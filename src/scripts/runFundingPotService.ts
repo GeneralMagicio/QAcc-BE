@@ -76,14 +76,20 @@ async function generateBatchFile(batchNumber: number) {
   const batchConfig = {
     TIMEFRAME: {
       FROM_TIMESTAMP: Math.floor(
-        new Date(roundData.startDate).getTime() / 1000,
+        new Date(roundData.startDate).getTime() / 1000 + 3 * 3600 + 1800,
       ), // Convert to timestamp
-      TO_TIMESTAMP: Math.floor(new Date(roundData.endDate).getTime() / 1000),
+      TO_TIMESTAMP: Math.floor(
+        new Date(roundData.endDate).getTime() / 1000 + 3 * 3600 + 1800,
+      ),
     },
     VESTING_DETAILS: {
-      START: Math.floor(new Date(roundData?.startDate).getTime() / 1000), // todo: should add it to rounds DB or set a default value
+      START: Math.floor(
+        new Date(roundData?.startDate).getTime() / 1000 + 3 * 3600 + 1800,
+      ), // todo: should add it to rounds DB or set a default value
       CLIFF: 100, // Default to 100 secs
-      END: Math.floor(new Date(roundData.endDate).getTime() / 1000), // todo: should add it to rounds DB or set a default value
+      END: Math.floor(
+        new Date(roundData.endDate).getTime() / 1000 + 3 * 3600 + 1800,
+      ), // todo: should add it to rounds DB or set a default value
     },
     LIMITS: {
       INDIVIDUAL: (roundData.roundUSDCapPerUserPerProject || '5000').toString(), // Default to 5000 for individual cap
