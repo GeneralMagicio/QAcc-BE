@@ -90,9 +90,11 @@ export async function syncDonationsWithBlockchainData(
   {
     projectFilter,
     donationFilter,
+    batchNumber,
   }: {
     projectFilter: FindOptionsWhere<Project>;
     donationFilter: FindOptionsWhere<Donation>;
+    batchNumber?: number;
   } = {
     projectFilter: {},
     donationFilter: {},
@@ -104,5 +106,5 @@ export async function syncDonationsWithBlockchainData(
 
   await updateTokenPriceAndTotalSupplyForProjects(projectFilter);
 
-  await updateRewardsForDonations(donationFilter);
+  await updateRewardsForDonations(donationFilter, batchNumber);
 }
