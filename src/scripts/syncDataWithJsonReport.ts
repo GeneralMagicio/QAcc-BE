@@ -165,6 +165,7 @@ async function processReportForDonations(
 
 export async function updateRewardsForDonations(
   donationFilter: FindOptionsWhere<Donation>,
+  batchNumber?: number,
 ) {
   try {
     const datasource = AppDataSource.getDataSource();
@@ -199,7 +200,7 @@ export async function updateRewardsForDonations(
       // const roundNumber = getRoundNumberByDonations(
       //   donationsByProjectId[projectId],
       // );
-      const roundNumber = Number(process.argv[2]);
+      const roundNumber = batchNumber || Number(process.argv[2]);
 
       // Look for matching report files based on orchestrator address
       let matchedReportFile = null;

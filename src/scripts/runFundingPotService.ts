@@ -322,7 +322,7 @@ async function setBatchMintingExecutionFlag(batchNumber: number) {
   await round.save();
 }
 
-async function main() {
+export async function executeBatchMinting(forceOnlyReport?: boolean) {
   try {
     let batchDetails;
     const batchNumberFromArg = Number(process.argv[2]);
@@ -331,7 +331,8 @@ async function main() {
       batchDetails = await getFirstRoundThatNeedExecuteBatchMinting();
     }
     const batchNumber = batchNumberFromArg || batchDetails?.batchNumber;
-    const onlyReport = onlyReportFromArg || batchDetails?.isExecutedBefore;
+    const onlyReport =
+      forceOnlyReport || onlyReportFromArg || batchDetails?.isExecutedBefore;
     // Step 1
     console.info('Start pulling latest version of funding pot service...');
     await pullLatestVersionOfFundingPot();
@@ -369,11 +370,18 @@ async function main() {
       console.info('Batch minting execution flag set successfully.');
     }
     console.info('Done!');
-    process.exit();
+    return batchNumber;
   } catch (error) {
-    console.error('Error in running funding pot service.', error.message);
-    process.exit();
+    console.error('Error in executing batch minting.', error.message);
   }
+  return;
+}
+
+async function main() {
+  console.info(`Executing batch minting...`);
+  await executeBatchMinting();
+  console.info(`Batch minting executed successfully.`);
+  process.exit();
 }
 
 main();
