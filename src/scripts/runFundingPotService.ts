@@ -202,11 +202,11 @@ const serviceDir = path.join(repoLocalDir);
 
 async function installDependencies() {
   console.info(`Installing npm dependencies in ${serviceDir}...`);
-  await execShellCommand('npm install --loglevel=error', serviceDir);
+  await execShellCommand('npm.cmd install --loglevel=error', serviceDir);
 }
 
 async function runFundingPotService(batchNumber: number) {
-  const command = 'npm run all ' + batchNumber;
+  const command = 'npm.cmd run all ' + batchNumber;
   console.info(`Running "${command}" in ${serviceDir}...`);
   await execShellCommand(command, serviceDir);
 }
