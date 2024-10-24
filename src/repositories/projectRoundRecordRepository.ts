@@ -18,6 +18,9 @@ export async function updateOrCreateProjectRoundRecord(
   qfRoundId?: number | null,
   earlyAccessRoundId?: number | null,
 ): Promise<ProjectRoundRecord> {
+  if (!qfRoundId && !earlyAccessRoundId) {
+    throw new Error('No round specified on updateOrCreateProjectRoundRecord');
+  }
   try {
     let query = Donation.createQueryBuilder('donation')
       .select('SUM(COALESCE(donation.amount))', 'totalDonationAmount')
@@ -82,6 +85,11 @@ export async function updateOrCreateProjectRoundRecord(
     return prr;
   } catch (error) {
     logger.error('Error updating or creating ProjectRoundRecord:', error);
+    logger.error('Paramse:', {
+      projectId,
+      qfRoundId,
+      earlyAccessRoundId,
+    });
     throw new Error(
       `Failed to update or create ProjectRoundRecord, ${error.message}`,
     );
