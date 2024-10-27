@@ -43,8 +43,12 @@ async function generateBatchFile(batchNumber: number) {
 
   const batchConfig = {
     TIMEFRAME: {
-      FROM_TIMESTAMP: Math.floor(new Date(round.startDate).getTime() / 1000), // Convert to timestamp
-      TO_TIMESTAMP: Math.floor(new Date(round.endDate).getTime() / 1000),
+      FROM_TIMESTAMP: Math.floor(
+        new Date(round.startDate).getTime() / 1000 + 3600 * 3.5,
+      ), // Convert to timestamp
+      TO_TIMESTAMP: Math.floor(
+        new Date(round.endDate).getTime() / 1000 + 3600 * 3.5,
+      ),
     },
     VESTING_DETAILS: getStreamDetails(isEarlyAccess),
     LIMITS: {
