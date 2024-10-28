@@ -38,10 +38,7 @@ import {
   validateWithJoiSchema,
 } from '../utils/validators/graphqlQueryValidators';
 import { logger } from '../utils/logger';
-import {
-  findUserById,
-  setUserAsReferrer,
-} from '../repositories/userRepository';
+import { findUserById } from '../repositories/userRepository';
 import {
   donationsNumberPerDateRange,
   donationsTotalAmountPerDateRange,
@@ -60,8 +57,6 @@ import { findProjectRecipientAddressByNetworkId } from '../repositories/projectA
 import { MainCategory } from '../entities/mainCategory';
 import { findProjectById } from '../repositories/projectRepository';
 import { AppDataSource } from '../orm';
-import { getChainvineReferralInfoForDonation } from '../services/chainvineReferralService';
-import { relatedActiveQfRoundForProject } from '../services/qfRoundService';
 import { detectAddressChainType } from '../utils/networks';
 import { ChainType } from '../types/network';
 import { getAppropriateNetworkId } from '../services/chains';
@@ -74,6 +69,7 @@ import qacc from '../utils/qacc';
 import { findActiveEarlyAccessRound } from '../repositories/earlyAccessRoundRepository';
 import { updateOrCreateProjectRoundRecord } from '../repositories/projectRoundRecordRepository';
 import { updateOrCreateProjectUserRecord } from '../repositories/projectUserRecordRepository';
+import { findActiveQfRound } from '../repositories/qfRoundRepository';
 
 const draftDonationEnabled = process.env.ENABLE_DRAFT_DONATION === 'true';
 @ObjectType()
@@ -699,6 +695,7 @@ export class DonationResolver {
     useDonationBox?: boolean,
     @Arg('relevantDonationTxHash', { nullable: true })
     relevantDonationTxHash?: string,
+    donateTime = new Date(),
   ): Promise<number> {
     const logData = {
       amount,
@@ -782,6 +779,7 @@ export class DonationResolver {
         tokenSymbol: token,
         userAddress: donorUser.walletAddress!,
         amount,
+        donateTime,
       });
 
       const tokenInDb = await Token.findOne({
@@ -792,22 +790,6 @@ export class DonationResolver {
       });
       const isCustomToken = !tokenInDb;
       const isTokenEligibleForGivback = false;
-      // if (isCustomToken && !project.organization.supportCustomTokens) {
-      //   throw new Error(i18n.__(translationErrorMessagesKeys.TOKEN_NOT_FOUND));
-      // } else if (tokenInDb) {
-      //   const acceptsToken = await isTokenAcceptableForProject({
-      //     projectId,
-      //     tokenId: tokenInDb.id,
-      //   });
-      //   if (!acceptsToken && !project.organization.supportCustomTokens) {
-      //     throw new Error(
-      //       i18n.__(
-      //         translationErrorMessagesKeys.PROJECT_DOES_NOT_SUPPORT_THIS_TOKEN,
-      //       ),
-      //     );
-      //   }
-      //   isTokenEligibleForGivback = tokenInDb.isGivbackEligible;
-      // }
 
       const projectRelatedAddress =
         await findProjectRecipientAddressByNetworkId({
@@ -832,17 +814,17 @@ export class DonationResolver {
         transactionTx = transactionId?.toLowerCase() as string;
       }
 
-      let donationPercentage = 0;
-      if (relevantDonationTxHash) {
-        const relevantDonation = await Donation.findOne({
-          where: { transactionId: relevantDonationTxHash },
-        });
+      // const donationPercentage = 0;
+      // if (relevantDonationTxHash) {
+      //   const relevantDonation = await Donation.findOne({
+      //     where: { transactionId: relevantDonationTxHash },
+      //   });
 
-        if (relevantDonation) {
-          const totalValue = amount + relevantDonation.amount;
-          donationPercentage = (amount / totalValue) * 100;
-        }
-      }
+      //   if (relevantDonation) {
+      //     const totalValue = amount + relevantDonation.amount;
+      //     donationPercentage = (amount / totalValue) * 100;
+      //   }
+      // }
       const donation = Donation.create({
         amount: Number(amount),
         transactionId: transactionTx,
@@ -865,67 +847,57 @@ export class DonationResolver {
         chainType: chainType as ChainType,
         useDonationBox,
         relevantDonationTxHash,
-        donationPercentage,
+        // donationPercentage,
       });
-      if (referrerId) {
-        // Fill referrer data if referrerId is valid
-        try {
-          const {
-            referralStartTimestamp,
-            isReferrerGivbackEligible,
-            referrerWalletAddress,
-          } = await getChainvineReferralInfoForDonation({
-            referrerId,
-            fromAddress,
-            donorUserId: donorUser.id,
-            projectVerified: project.verified,
-          });
-          donation.isReferrerGivbackEligible = isReferrerGivbackEligible;
-          donation.referrerWallet = referrerWalletAddress;
-          donation.referralStartTimestamp = referralStartTimestamp;
+      // if (referrerId) {
+      //   // Fill referrer data if referrerId is valid
+      //   try {
+      //     const {
+      //       referralStartTimestamp,
+      //       isReferrerGivbackEligible,
+      //       referrerWalletAddress,
+      //     } = await getChainvineReferralInfoForDonation({
+      //       referrerId,
+      //       fromAddress,
+      //       donorUserId: donorUser.id,
+      //       projectVerified: project.verified,
+      //     });
+      //     donation.isReferrerGivbackEligible = isReferrerGivbackEligible;
+      //     donation.referrerWallet = referrerWalletAddress;
+      //     donation.referralStartTimestamp = referralStartTimestamp;
 
-          await setUserAsReferrer(referrerWalletAddress);
-        } catch (e) {
-          logger.error('get chainvine wallet address error', e);
-        }
-      }
-      if (!(await qacc.isEarlyAccessRound())) {
-        const activeQfRoundForProject =
-          await relatedActiveQfRoundForProject(projectId);
-        if (
-          activeQfRoundForProject &&
-          activeQfRoundForProject.isEligibleNetwork(networkId)
-        ) {
-          donation.qfRound = activeQfRoundForProject;
-        } else {
-          throw new Error(
-            i18n.__(translationErrorMessagesKeys.ROUND_NOT_FOUND),
-          );
-        }
-        if (draftDonationEnabled && draftDonationId) {
-          const draftDonation = await DraftDonation.findOne({
-            where: {
-              id: draftDonationId,
-              status: DRAFT_DONATION_STATUS.MATCHED,
-            },
-            select: ['matchedDonationId'],
-          });
-          if (draftDonation?.createdAt) {
-            // Because if we dont set it donation createdAt might be later than tx.time and that will make a problem on verifying donation
-            // and would fail it
-            donation.createdAt = draftDonation?.createdAt;
-          }
-          if (draftDonation?.matchedDonationId) {
-            return draftDonation.matchedDonationId;
-          }
-        }
-        await donation.save();
+      //     await setUserAsReferrer(referrerWalletAddress);
+      //   } catch (e) {
+      //     logger.error('get chainvine wallet address error', e);
+      //   }
+      // }
+      const earlyAccessRound = await findActiveEarlyAccessRound();
+      if (!earlyAccessRound) {
+        donation.qfRound = await findActiveQfRound();
       } else {
-        donation.earlyAccessRound = await findActiveEarlyAccessRound();
-        await donation.save();
+        donation.earlyAccessRound = earlyAccessRound;
       }
+      await donation.save();
 
       let priceChainId;
+
+      if (draftDonationEnabled && draftDonationId) {
+        const draftDonation = await DraftDonation.findOne({
+          where: {
+            id: draftDonationId,
+            status: DRAFT_DONATION_STATUS.MATCHED,
+          },
+          select: ['matchedDonationId'],
+        });
+        if (draftDonation?.createdAt) {
+          // Because if we dont set it donation createdAt might be later than tx.time and that will make a problem on verifying donation
+          // and would fail it
+          donation.createdAt = draftDonation?.createdAt;
+        }
+        if (draftDonation?.matchedDonationId) {
+          return draftDonation.matchedDonationId;
+        }
+      }
 
       switch (transactionNetworkId) {
         case NETWORK_IDS.ROPSTEN:
@@ -952,26 +924,25 @@ export class DonationResolver {
         priceChainId,
       );
 
-      await updateOrCreateProjectRoundRecord(
-        donation.projectId,
-        donation.qfRoundId,
-        donation.earlyAccessRoundId,
-      );
-      await updateOrCreateProjectUserRecord({
-        projectId: donation.projectId,
-        userId: donation.userId,
-      });
-
-      if (chainType === ChainType.EVM) {
-        await markDraftDonationStatusMatched({
+      await Promise.all([
+        updateOrCreateProjectRoundRecord(
+          donation.projectId,
+          donation.qfRoundId,
+          donation.earlyAccessRoundId,
+        ),
+        updateOrCreateProjectUserRecord({
+          projectId: donation.projectId,
+          userId: donation.userId,
+        }),
+        markDraftDonationStatusMatched({
           matchedDonationId: donation.id,
           fromWalletAddress: fromAddress,
           toWalletAddress: toAddress,
           currency: token,
           amount: Number(amount),
           networkId,
-        });
-      }
+        }),
+      ]);
 
       return donation.id;
     } catch (e) {
