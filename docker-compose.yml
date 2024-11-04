@@ -202,4 +202,3 @@ volumes:
 networks:
   qacc:
     name: qacc-be_qacc
-    external: true
