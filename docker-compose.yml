@@ -1,7 +1,7 @@
 services:
   qacc-be-graph-ql1:
     container_name: qacc-be-graph-ql1
-    image: ghcr.io/generalmagicio/qacc-be:staging
+    image: ghcr.io/generalmagicio/qacc-be:early-access
     command: npm run start:docker:server
     environment:
       - ENVIRONMENT=production
@@ -27,7 +27,7 @@ services:
 
   qacc-be-graph-ql2:
     container_name: qacc-be-graph-ql2
-    image: ghcr.io/generalmagicio/qacc-be:staging
+    image: ghcr.io/generalmagicio/qacc-be:early-access
     command: npm run start:docker:server
     environment:
       - ENVIRONMENT=production
@@ -53,7 +53,7 @@ services:
 
   qacc-be-graph-ql3:
     container_name: qacc-be-graph-ql3
-    image: ghcr.io/generalmagicio/qacc-be:staging
+    image: ghcr.io/generalmagicio/qacc-be:early-access
     command: npm run start:docker:server
     environment:
       - ENVIRONMENT=production
@@ -79,7 +79,7 @@ services:
 
   qacc-be-job1:
     container_name: qacc-be-job1
-    image: ghcr.io/generalmagicio/qacc-be:staging
+    image: ghcr.io/generalmagicio/qacc-be:early-access
     command: npm run start:docker:server
     environment:
       - ENVIRONMENT=production
@@ -105,7 +105,7 @@ services:
 
   qacc-be-job2:
     container_name: qacc-be-job2
-    image: ghcr.io/generalmagicio/qacc-be:staging
+    image: ghcr.io/generalmagicio/qacc-be:early-access
     command: npm run start:docker:server
     environment:
       - ENVIRONMENT=production
@@ -131,7 +131,7 @@ services:
 
   qacc-be-job3:
     container_name: qacc-be-job3
-    image: ghcr.io/generalmagicio/qacc-be:staging
+    image: ghcr.io/generalmagicio/qacc-be:early-access
     command: npm run start:docker:server
     environment:
       - ENVIRONMENT=production
@@ -168,18 +168,19 @@ services:
     ports:
       - '6379:6379'
 
-#  autoheal:
-#    image: willfarrell/autoheal:latest
-#    tty: true
-#    restart: always
-#    environment:
-#      - AUTOHEAL_INTERVAL=30
-#      - AUTOHEAL_START_PERIOD=300
-#      - AUTOHEAL_DEFAULT_STOP_TIMEOUT=10
-#    volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock
-#    networks:
-#      - qacc
+  autoheal:
+    container_name: autoheal
+    image: willfarrell/autoheal:latest
+    tty: true
+    restart: always
+    environment:
+      - AUTOHEAL_INTERVAL=30
+      - AUTOHEAL_START_PERIOD=300
+      - AUTOHEAL_DEFAULT_STOP_TIMEOUT=10
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - qacc
 
   caddy:
     image: caddy:2-alpine
