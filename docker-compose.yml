@@ -18,8 +18,8 @@ services:
       test: curl --fail http://localhost:4000/health || exit 1
       interval: 40s
       timeout: 30s
-      retries: 3
-      start_period: 100s
+      retries: 5
+      start_period: 180s
     networks:
       - qacc
     ports:
@@ -44,8 +44,8 @@ services:
       test: curl --fail http://localhost:4000/health || exit 1
       interval: 40s
       timeout: 30s
-      retries: 3
-      start_period: 100s
+      retries: 5
+      start_period: 180s
     networks:
       - qacc
     ports:
@@ -70,8 +70,8 @@ services:
       test: curl --fail http://localhost:4000/health || exit 1
       interval: 40s
       timeout: 30s
-      retries: 3
-      start_period: 100s
+      retries: 5
+      start_period: 180s
     networks:
       - qacc
     ports:
@@ -96,8 +96,8 @@ services:
       test: curl --fail http://localhost:4000/health || exit 1
       interval: 40s
       timeout: 30s
-      retries: 3
-      start_period: 100s
+      retries: 5
+      start_period: 180s
     networks:
       - qacc
 
@@ -120,8 +120,8 @@ services:
       test: curl --fail http://localhost:4000/health || exit 1
       interval: 40s
       timeout: 30s
-      retries: 3
-      start_period: 100s
+      retries: 5
+      start_period: 180s
     networks:
       - qacc
 
@@ -144,8 +144,8 @@ services:
       test: curl --fail http://localhost:4000/health || exit 1
       interval: 40s
       timeout: 30s
-      retries: 3
-      start_period: 100s
+      retries: 5
+      start_period: 180s
     networks:
       - qacc
 
