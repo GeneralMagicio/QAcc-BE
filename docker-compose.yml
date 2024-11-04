@@ -100,6 +100,8 @@ services:
       start_period: 60s
     networks:
       - qacc
+    ports:
+      - '4000'
 
   qacc-be-job2:
     container_name: qacc-be-job2
@@ -124,6 +126,8 @@ services:
       start_period: 60s
     networks:
       - qacc
+    ports:
+      - '4000'
 
   qacc-be-job3:
     container_name: qacc-be-job3
@@ -148,7 +152,9 @@ services:
       start_period: 60s
     networks:
       - qacc
-
+    ports:
+      - '4000'
+      
   qacc-redis:
     container_name: qacc-redis
     image: redis:7-alpine
