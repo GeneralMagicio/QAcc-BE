@@ -17,9 +17,9 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
       interval: 30s
-      timeout: 20s
+      timeout: 10s
       retries: 5
-      start_period: 180s
+      start_period: 60s
     networks:
       - qacc
     ports:
@@ -43,9 +43,9 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
       interval: 30s
-      timeout: 20s
+      timeout: 10s
       retries: 5
-      start_period: 180s
+      start_period: 60s
     networks:
       - qacc
     ports:
@@ -69,9 +69,9 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
       interval: 30s
-      timeout: 20s
+      timeout: 10s
       retries: 5
-      start_period: 180s
+      start_period: 60s
     networks:
       - qacc
     ports:
@@ -95,9 +95,9 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
       interval: 30s
-      timeout: 20s
+      timeout: 10s
       retries: 5
-      start_period: 180s
+      start_period: 60s
     networks:
       - qacc
 
@@ -119,9 +119,9 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
       interval: 30s
-      timeout: 20s
+      timeout: 10s
       retries: 5
-      start_period: 180s
+      start_period: 60s
     networks:
       - qacc
 
@@ -143,9 +143,9 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
       interval: 30s
-      timeout: 20s
+      timeout: 10s
       retries: 5
-      start_period: 180s
+      start_period: 60s
     networks:
       - qacc
 
