@@ -44,10 +44,10 @@ async function generateBatchFile(batchNumber: number) {
   const batchConfig = {
     TIMEFRAME: {
       FROM_TIMESTAMP: Math.floor(
-        new Date(round.startDate).getTime() / 1000 + 3600 * 3.5,
+        new Date(round.startDate).getTime() / 1000 + 3600 * 7,
       ), // Convert to timestamp
       TO_TIMESTAMP: Math.floor(
-        new Date(round.endDate).getTime() / 1000 + 3600 * 3.5,
+        new Date(round.endDate).getTime() / 1000 + 3600 * 7,
       ),
     },
     VESTING_DETAILS: getStreamDetails(isEarlyAccess),
@@ -69,7 +69,7 @@ async function generateBatchFile(batchNumber: number) {
     },
     IS_EARLY_ACCESS: isEarlyAccess, // Set based on the round type
     PRICE: (round.tokenPrice || '0.1').toString(), // Default price to "0.1" if not provided
-    // ONLY_REPORT: onlyReport, // If we set this flag, only report will be generated and no transactions propose to the safes
+    ONLY_REPORT: true, // If we set this flag, only report will be generated and no transactions propose to the safes
   };
 
   const batchFilePath = path.join(
@@ -175,6 +175,10 @@ async function createEnvFile() {
       .replace(
         'RPC_URL="https://rpc.ankr.com/base_sepolia"',
         'RPC_URL="https://zkevm-rpc.com"',
+      )
+      .replace(
+        'BACKEND_URL="https://staging.qacc-be.generalmagic.io/graphql"',
+        `BACKEND_URL="${process.env.SERVER_URL}/graphql"`,
       )
       .replace('CHAIN_ID=84532', 'CHAIN_ID=1101');
 
