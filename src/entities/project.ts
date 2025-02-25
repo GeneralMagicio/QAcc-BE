@@ -302,6 +302,10 @@ export class Project extends BaseEntity {
   @Column()
   verified: boolean;
 
+  @Field(_type => Boolean, { nullable: true })
+  @Column({ default: false })
+  hasEARound: boolean;
+
   @Field(_type => String, { nullable: true })
   @Column('text', { nullable: true })
   verificationStatus?: string | null;
