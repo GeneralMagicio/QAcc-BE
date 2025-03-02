@@ -14,7 +14,7 @@ export const createDonationMutation = `
     $squidRequestId: String
     $firstTransactionHash: String
     $isSwap: Boolean
-    $metaData: JSON
+    $metaData: String
   ) {
     createDonation(
       transactionId: $transactionId

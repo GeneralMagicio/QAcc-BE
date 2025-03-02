@@ -353,6 +353,37 @@ export const deleteProjectDirectlyFromDb = async (
   }
 };
 
+export interface CreateDonationData {
+  id?: number;
+  transactionId: string;
+  transactionNetworkId: number;
+  toWalletAddress: string;
+  fromWalletAddress: string;
+  currency: string;
+  anonymous: boolean;
+  segmentNotified?: boolean;
+  amount: number;
+  createdAt: any;
+  valueUsd?: number;
+  valueEth?: number;
+  nonce?: number;
+  projectId?: number;
+  status?: string;
+  verified?: string;
+  qfRoundId?: number | null;
+  earlyAccessRoundId?: number | null;
+  tokenAddress?: string;
+  qfRoundUserScore?: number;
+  useDonationBox?: boolean;
+  relevantDonationTxHash?: string;
+  donationPercentage?: number;
+  blockNumber?: number;
+  squidRequestId?: string;
+  firstTransactionHash?: string;
+  isSwap?: boolean;
+  metaData?: string;
+}
+
 export const createDonationData = (params?: {
   status?: string;
   createdAt?: Date;
@@ -361,6 +392,10 @@ export const createDonationData = (params?: {
   qfRoundId?: number;
   transactionId?: string;
   earlyAccessRoundId?: number;
+  squidRequestId?: string;
+  firstTransactionHash?: string;
+  isSwap?: boolean;
+  metaData?: string;
 }): CreateDonationData => {
   return {
     transactionId: params?.transactionId || generateRandomEvmTxHash(),
@@ -376,6 +411,10 @@ export const createDonationData = (params?: {
     segmentNotified: true,
     qfRoundId: params?.qfRoundId || undefined,
     earlyAccessRoundId: params?.earlyAccessRoundId || undefined,
+    squidRequestId: params?.squidRequestId || undefined,
+    firstTransactionHash: params?.firstTransactionHash || undefined,
+    isSwap: params?.isSwap || false,
+    metaData: params?.metaData || undefined,
   };
 };
 
@@ -1947,55 +1986,6 @@ export const DONATION_SEED_DATA = {
   },
 };
 
-export interface CreateDonationData {
-  id?: number;
-  transactionId: string;
-  transactionNetworkId: number;
-  toWalletAddress: string;
-  fromWalletAddress: string;
-  currency: string;
-  anonymous: boolean;
-  segmentNotified?: boolean;
-  amount: number;
-  createdAt: any;
-  valueUsd?: number;
-  valueEth?: number;
-  nonce?: number;
-  // userId?: number;
-  projectId?: number;
-  status?: string;
-  verified?: string;
-  qfRoundId?: number | null;
-  earlyAccessRoundId?: number | null;
-  tokenAddress?: string;
-  qfRoundUserScore?: number;
-  useDonationBox?: boolean;
-  relevantDonationTxHash?: string;
-  donationPercentage?: number;
-  blockNumber?: number;
-  squidRequestId?: string;
-  firstTransactionHash?: string;
-  isSwap?: boolean;
-  metaData?: string;
-}
-
-export interface CategoryData {
-  id?: number;
-  value: string;
-  name: string;
-  isActive: boolean;
-  mainCategory: MainCategory;
-  source?: string;
-}
-
-export interface MainCategoryData {
-  id?: number;
-  banner: string;
-  description: string;
-  slug: string;
-  title: string;
-}
-
 export const saveDonationDirectlyToDb = async (
   donationData: CreateDonationData,
   userId?: number,
@@ -2080,4 +2070,21 @@ export function generateQfRoundNumber(): number {
 let nextEARoundNumber = 1000;
 export function generateEARoundNumber(): number {
   return nextEARoundNumber++;
+}
+
+export interface CategoryData {
+  id?: number;
+  value: string;
+  name: string;
+  isActive: boolean;
+  mainCategory: MainCategory;
+  source?: string;
+}
+
+export interface MainCategoryData {
+  id?: number;
+  banner: string;
+  description: string;
+  slug: string;
+  title: string;
 }
