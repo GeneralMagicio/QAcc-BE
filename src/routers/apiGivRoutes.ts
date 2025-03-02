@@ -103,6 +103,7 @@ apiGivRouter.post(
         isFiat,
         isTokenEligibleForGivback: token.isGivbackEligible,
         speedup: false,
+        isSwap: false,
       });
       const result = await donationData.save();
       await updateProjectStatistics(project.id);

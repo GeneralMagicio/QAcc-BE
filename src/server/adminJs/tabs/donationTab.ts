@@ -141,6 +141,7 @@ export const createDonation = async (
         createdAt: new Date(transactionInfo?.timestamp * 1000),
         anonymous: true,
         isTokenEligibleForGivback: true,
+        isSwap: false,
       });
       const donor = await findUserByWalletAddress(transactionInfo?.from);
       if (donor) {

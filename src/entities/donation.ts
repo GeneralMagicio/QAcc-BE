@@ -289,6 +289,22 @@ export class Donation extends BaseEntity {
   @Column({ type: 'float', nullable: true })
   cliff?: number;
 
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  squidRequestId?: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  firstTransactionHash?: string;
+
+  @Field(_type => Boolean)
+  @Column({ type: 'boolean', default: false })
+  isSwap: boolean;
+
+  @Field({ nullable: true })
+  @Column({ type: 'text', nullable: true })
+  metaData?: string;
+
   // we should calculated these values in the front-end, because they are presentation logics
   // // Virtual field to calculate remaining months and days
   // @Field(_type => String, { nullable: true })

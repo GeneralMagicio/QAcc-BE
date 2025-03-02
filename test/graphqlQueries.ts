@@ -11,6 +11,10 @@ export const createDonationMutation = `
     $anonymous: Boolean
     $referrerId: String
     $safeTransactionId: String
+    $squidRequestId: String
+    $firstTransactionHash: String
+    $isSwap: Boolean
+    $metaData: JSON
   ) {
     createDonation(
       transactionId: $transactionId
@@ -24,6 +28,10 @@ export const createDonationMutation = `
       anonymous: $anonymous
       referrerId: $referrerId
       safeTransactionId: $safeTransactionId
+      squidRequestId: $squidRequestId
+      firstTransactionHash: $firstTransactionHash
+      isSwap: $isSwap
+      metaData: $metaData
     )
   }
 `;

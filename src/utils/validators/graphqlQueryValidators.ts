@@ -122,6 +122,10 @@ export const createDonationQueryValidator = Joi.object({
   chainType: Joi.string().required(),
   useDonationBox: Joi.boolean(),
   relevantDonationTxHash: Joi.string().allow(null, ''),
+  squidRequestId: Joi.string().allow(null, ''),
+  firstTransactionHash: Joi.string().allow(null, ''),
+  isSwap: Joi.boolean(),
+  metaData: Joi.string().allow(null, ''),
 });
 
 export const createDraftDonationQueryValidator = Joi.object({

@@ -221,6 +221,7 @@ export const createIdrissTwitterDonation = async (
       toWalletAddress: toAddress.toString().toLowerCase(),
       fromWalletAddress: fromAddress.toString().toLowerCase(),
       anonymous: false,
+      isSwap: false,
     });
 
     // set QFround

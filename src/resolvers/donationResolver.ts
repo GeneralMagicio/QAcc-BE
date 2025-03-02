@@ -697,6 +697,11 @@ export class DonationResolver {
     useDonationBox?: boolean,
     @Arg('relevantDonationTxHash', { nullable: true })
     relevantDonationTxHash?: string,
+    @Arg('squidRequestId', { nullable: true }) squidRequestId?: string,
+    @Arg('firstTransactionHash', { nullable: true })
+    firstTransactionHash?: string,
+    @Arg('isSwap', { nullable: true, defaultValue: false }) isSwap?: boolean,
+    @Arg('metaData', { nullable: true }) metaData?: string,
     donateTime = new Date(),
   ): Promise<number> {
     const logData = {
@@ -861,7 +866,10 @@ export class DonationResolver {
         chainType: chainType as ChainType,
         useDonationBox,
         relevantDonationTxHash,
-        // donationPercentage,
+        squidRequestId,
+        firstTransactionHash,
+        isSwap,
+        metaData,
       });
       // if (referrerId) {
       //   // Fill referrer data if referrerId is valid

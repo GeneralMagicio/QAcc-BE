@@ -1973,6 +1973,10 @@ export interface CreateDonationData {
   relevantDonationTxHash?: string;
   donationPercentage?: number;
   blockNumber?: number;
+  squidRequestId?: string;
+  firstTransactionHash?: string;
+  isSwap?: boolean;
+  metaData?: string;
 }
 
 export interface CategoryData {
