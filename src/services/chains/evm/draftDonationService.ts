@@ -279,7 +279,10 @@ async function submitMatchedDraftDonation(
       undefined, // draft donation id
       undefined, // use donationBox
       undefined, // relevant donation tx hash
-
+      '', // firstTransactionHash
+      '', // metaData
+      false, // isSwap
+      '', // squidRequestId
       new Date(+tx.timeStamp * 1000),
     );
 

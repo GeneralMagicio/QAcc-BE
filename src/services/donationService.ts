@@ -712,7 +712,10 @@ const ankrTransferHandler = async (transfer: TokenTransfer) => {
       undefined, // draft donation id
       undefined, // use donationBox
       undefined, // relevant donation tx hash
-
+      '', // firstTransactionHash
+      '', // metaData
+      false, // isSwap
+      '', // squidRequestId
       new Date(transfer.timestamp * 1000),
     );
 
