@@ -72,6 +72,7 @@ import { updateOrCreateProjectUserRecord } from '../repositories/projectUserReco
 import { findActiveQfRound } from '../repositories/qfRoundRepository';
 import { EarlyAccessRound } from '../entities/earlyAccessRound';
 import { QfRound } from '../entities/qfRound';
+import { addQaccPointsForDonation } from '../services/qaccPointsService';
 
 const draftDonationEnabled = process.env.ENABLE_DRAFT_DONATION === 'true';
 @ObjectType()
@@ -944,6 +945,7 @@ export class DonationResolver {
             donation.qfRound?.seasonNumber ||
             donation.earlyAccessRound?.seasonNumber,
         }),
+
         markDraftDonationStatusMatched({
           matchedDonationId: donation.id,
           fromWalletAddress: fromAddress,
@@ -952,6 +954,7 @@ export class DonationResolver {
           amount: Number(amount),
           networkId,
         }),
+        addQaccPointsForDonation(donation),
       ]);
 
       return donation.id;
