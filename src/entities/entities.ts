@@ -84,6 +84,7 @@ export const getEntities = (): DataSourceOptions['entities'] => {
     ProjectRoundRecord,
     ProjectUserRecord,
 
+    // test comment
     AnkrState,
   ];
 };
