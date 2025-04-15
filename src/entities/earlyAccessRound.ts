@@ -8,9 +8,12 @@ import {
   Index,
   AfterLoad,
   ManyToMany,
+  ManyToOne,
+  RelationId,
 } from 'typeorm';
 import { Field, ID, ObjectType, Int, Float } from 'type-graphql';
 import { Project } from './project';
+import { Season } from './season';
 
 @Entity()
 @ObjectType()
@@ -24,9 +27,13 @@ export class EarlyAccessRound extends BaseEntity {
   @Index({ unique: true })
   roundNumber: number;
 
-  @Field(() => Int, { nullable: true })
+  @Field(_type => Season, { nullable: true })
+  @ManyToOne(_type => Season)
+  season: Season;
+
+  @RelationId((earlyAccessRound: EarlyAccessRound) => earlyAccessRound.season)
   @Column({ nullable: true })
-  seasonNumber?: number;
+  seasonId: number;
 
   @Field(() => Date)
   @Column()
@@ -82,8 +89,8 @@ export class EarlyAccessRound extends BaseEntity {
         .where('eaRound.roundNumber <= :roundNumber', {
           roundNumber: this.roundNumber,
         })
-        .andWhere('eaRound.seasonNumber = :seasonNumber', {
-          seasonNumber: this.seasonNumber,
+        .andWhere('eaRound.seasonId = :seasonId', {
+          seasonId: this.seasonId,
         })
         .cache('cumulativeCapEarlyAccessRound-' + this.roundNumber, 300000)
         .getRawOne();

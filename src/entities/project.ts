@@ -1,4 +1,4 @@
-import { Field, Float, ID, ObjectType } from 'type-graphql';
+import { Field, Float, ID, ObjectType, InputType } from 'type-graphql';
 import {
   AfterInsert,
   AfterUpdate,
@@ -47,6 +47,7 @@ import { Campaign } from './campaign';
 import { ProjectEstimatedMatchingView } from './ProjectEstimatedMatchingView';
 import { ProjectSocialMedia } from './projectSocialMedia';
 import { EarlyAccessRound } from './earlyAccessRound';
+import { Season } from './season';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const moment = require('moment');
 
@@ -178,10 +179,6 @@ export class Project extends BaseEntity {
   @Field()
   @Column()
   title: string;
-
-  @Field({ nullable: true })
-  @Column('integer', { nullable: true })
-  seasonNumber?: number;
 
   @Index({ unique: true })
   @Field({ nullable: true })
@@ -500,6 +497,14 @@ export class Project extends BaseEntity {
   @Column({ type: 'boolean', default: false })
   hasEARound: boolean;
 
+  @Field(_type => Season, { nullable: true })
+  @ManyToOne(_type => Season, season => season.projects)
+  season: Season;
+
+  @RelationId((project: Project) => project.season)
+  @Column({ nullable: true })
+  seasonId: number;
+
   // only projects with status active can be listed automatically
   static pendingReviewSince(maximumDaysForListing: number) {
     const maxDaysForListing = moment()
@@ -772,4 +777,12 @@ export class ProjectUpdate extends BaseEntity {
   setProjectUpdateContentSummary() {
     this.contentSummary = getHtmlTextSummary(this.content);
   }
+}
+
+@InputType()
+export class CreateProjectInput {
+  // ... existing code ...
+  @Field(_type => Int, { nullable: true })
+  seasonId?: number;
+  // ... existing code ...
 }

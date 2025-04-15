@@ -10,9 +10,12 @@ import {
   Index,
   OneToMany,
   AfterLoad,
+  ManyToOne,
+  RelationId,
 } from 'typeorm';
 import { Project } from './project';
 import { Donation } from './donation';
+import { Season } from './season';
 
 @Entity()
 @ObjectType()
@@ -26,9 +29,13 @@ export class QfRound extends BaseEntity {
   @Index({ unique: true })
   roundNumber?: number;
 
-  @Field({ nullable: true })
-  @Column('integer', { nullable: true })
-  seasonNumber?: number;
+  @Field(_type => Season, { nullable: true })
+  @ManyToOne(_type => Season)
+  season: Season;
+
+  @RelationId((qfRound: QfRound) => qfRound.season)
+  @Column({ nullable: true })
+  seasonId: number;
 
   @Field({ nullable: true })
   @Column('text', { nullable: true })
@@ -161,7 +168,7 @@ export class QfRound extends BaseEntity {
   @AfterLoad()
   async calculateCumulativeCaps() {
     // Get all QF rounds in the same season ordered by roundNumber
-    if (this.seasonNumber) {
+    if (this.seasonId) {
       const { cumulativePOLCapPerProject, cumulativePOLCapPerUserPerProject } =
         await QfRound.createQueryBuilder('qfRound')
           .select(
@@ -175,8 +182,8 @@ export class QfRound extends BaseEntity {
           .where('qfRound.roundNumber <= :roundNumber', {
             roundNumber: this.roundNumber,
           })
-          .andWhere('qfRound.seasonNumber = :seasonNumber', {
-            seasonNumber: this.seasonNumber,
+          .andWhere('qfRound.seasonId = :seasonId', {
+            seasonId: this.seasonId,
           })
           .cache('cumulativeCapQfRound-' + this.roundNumber, 300000)
           .getRawOne();
@@ -188,7 +195,7 @@ export class QfRound extends BaseEntity {
         cumulativePOLCapPerUserPerProject || '0',
       );
     } else {
-      // If no season number, just use the round's own caps
+      // If no season, just use the round's own caps
       this.cumulativePOLCapPerProject = this.roundPOLCapPerProject || 0;
       this.cumulativePOLCapPerUserPerProject =
         this.roundPOLCapPerUserPerProject || 0;

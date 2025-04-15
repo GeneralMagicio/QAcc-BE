@@ -10,10 +10,11 @@ import {
 } from 'typeorm';
 import { Project } from './project';
 import { User } from './user';
+import { Season } from './season';
 
 @Entity()
 @ObjectType()
-@Index(['projectId', 'userId', 'seasonNumber'], {
+@Index(['projectId', 'userId', 'seasonId'], {
   unique: true,
 })
 export class ProjectUserRecord extends BaseEntity {
@@ -35,10 +36,6 @@ export class ProjectUserRecord extends BaseEntity {
   @Column({ type: 'float', default: 0 })
   qfTotalDonationAmount: number;
 
-  @Field(_type => Number, { nullable: true })
-  @Column({ nullable: true })
-  seasonNumber?: number;
-
   @Field(_type => Project)
   @ManyToOne(_type => Project, { eager: false })
   project: Project;
@@ -55,4 +52,12 @@ export class ProjectUserRecord extends BaseEntity {
   @Column({ nullable: false })
   @RelationId((ps: ProjectUserRecord) => ps.user)
   userId: number;
+
+  @Field(_type => Season, { nullable: true })
+  @ManyToOne(_type => Season, season => season.projectUserRecords)
+  season: Season;
+
+  @RelationId((record: ProjectUserRecord) => record.season)
+  @Column({ nullable: true })
+  seasonId: number;
 }

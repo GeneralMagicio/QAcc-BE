@@ -13,6 +13,7 @@ import qAccService from '../services/qAccService';
 import { ApolloContext } from '../types/ApolloContext';
 import { i18n, translationErrorMessagesKeys } from '../utils/errorMessages';
 import { findUserById } from '../repositories/userRepository';
+import { findSeasonByNumber } from '../repositories/seasonRepository';
 
 @ObjectType()
 class ProjectUserRecordAmounts {
@@ -65,10 +66,18 @@ export class QAccResolver {
     @Arg('seasonNumber', _type => Int, { nullable: true })
     seasonNumber?: number,
   ) {
+    let seasonId: number | undefined;
+    if (seasonNumber) {
+      const season = await findSeasonByNumber(seasonNumber);
+      if (!season) {
+        throw new Error(`Season not found with number ${seasonNumber}`);
+      }
+      seasonId = season.id;
+    }
     const record = await getProjectUserRecordAmount({
       projectId,
       userId,
-      seasonNumber,
+      seasonId,
     });
     return {
       totalDonationAmount: record.totalDonationAmount,
