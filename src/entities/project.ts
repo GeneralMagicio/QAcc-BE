@@ -1,4 +1,4 @@
-import { Field, Float, ID, ObjectType, InputType } from 'type-graphql';
+import { Field, Float, ID, ObjectType } from 'type-graphql';
 import {
   AfterInsert,
   AfterUpdate,
@@ -777,12 +777,4 @@ export class ProjectUpdate extends BaseEntity {
   setProjectUpdateContentSummary() {
     this.contentSummary = getHtmlTextSummary(this.content);
   }
-}
-
-@InputType()
-export class CreateProjectInput {
-  // ... existing code ...
-  @Field(_type => Int, { nullable: true })
-  seasonId?: number;
-  // ... existing code ...
 }

@@ -19,31 +19,43 @@ import { Donation, DONATION_STATUS } from '../entities/donation';
 import { QfRound } from '../entities/qfRound';
 import { ProjectRoundRecord } from '../entities/projectRoundRecord';
 import { User } from '../entities/user';
+import { Season } from '../entities/season';
 import qAccService from '../services/qAccService';
 
 describe('projectUserRecordRepository', () => {
   let project;
   let user;
   let eaRound;
+  let season;
 
   beforeEach(async () => {
+    // Create a season first
+    season = await Season.create({
+      seasonNumber: 1,
+      startDate: moment().subtract(1, 'month').toDate(),
+      endDate: moment().add(1, 'month').toDate(),
+    }).save();
+
     project = await saveProjectDirectlyToDb(createProjectData());
     user = await saveUserDirectlyToDb(generateRandomEtheriumAddress());
     eaRound = await saveEARoundDirectlyToDb({
       roundNumber: generateEARoundNumber(),
       startDate: new Date('2024-09-01'),
       endDate: new Date('2024-09-05'),
-      seasonNumber: 1,
+      seasonId: season.id,
     });
   });
 
   afterEach(async () => {
     if (eaRound) {
-      Donation.delete({ earlyAccessRoundId: eaRound.id });
-      ProjectRoundRecord.delete({ earlyAccessRoundId: eaRound.id });
-
+      await Donation.delete({ earlyAccessRoundId: eaRound.id });
+      await ProjectRoundRecord.delete({ earlyAccessRoundId: eaRound.id });
       await eaRound.remove();
       eaRound = null;
+    }
+    if (season) {
+      await season.remove();
+      season = null;
     }
   });
 
@@ -51,7 +63,7 @@ describe('projectUserRecordRepository', () => {
     const projectUserRecord = await updateOrCreateProjectUserRecord({
       projectId: project.id,
       userId: user.id,
-      seasonNumber: 1,
+      seasonId: season.id,
     });
 
     assert.isOk(projectUserRecord);
@@ -97,7 +109,7 @@ describe('projectUserRecordRepository', () => {
     const projectUserRecord = await updateOrCreateProjectUserRecord({
       projectId: project.id,
       userId: user.id,
-      seasonNumber: 1,
+      seasonId: season.id,
     });
 
     assert.isOk(projectUserRecord);
@@ -146,13 +158,13 @@ describe('projectUserRecordRepository', () => {
     await updateOrCreateProjectUserRecord({
       projectId: project.id,
       userId: user.id,
-      seasonNumber: 1,
+      seasonId: season.id,
     });
 
     const amount = await getProjectUserRecordAmount({
       projectId: project.id,
       userId: user.id,
-      seasonNumber: 1,
+      seasonId: season.id,
     });
 
     assert.equal(
@@ -166,13 +178,13 @@ describe('projectUserRecordRepository', () => {
       roundNumber: generateEARoundNumber(),
       startDate: new Date('2024-09-01'),
       endDate: new Date('2024-09-05'),
-      seasonNumber: 1,
+      seasonId: season.id,
     });
     const ea2 = await saveEARoundDirectlyToDb({
       roundNumber: generateEARoundNumber(),
       startDate: new Date('2024-09-06'),
       endDate: new Date('2024-09-10'),
-      seasonNumber: 1,
+      seasonId: season.id,
     });
 
     const qfRound = await QfRound.create({
@@ -183,7 +195,7 @@ describe('projectUserRecordRepository', () => {
       slug: 'QF - 2024-09-10 - ' + generateQfRoundNumber(),
       beginDate: moment('2024-09-10').add(1, 'days').toDate(),
       endDate: moment('2024-09-10').add(10, 'days').toDate(),
-      seasonNumber: 1,
+      seasonId: season.id,
     }).save();
 
     const ea1DonationAmount = 100;
@@ -224,7 +236,7 @@ describe('projectUserRecordRepository', () => {
     const userRecord = await updateOrCreateProjectUserRecord({
       projectId: project.id,
       userId: user.id,
-      seasonNumber: 1,
+      seasonId: season.id,
     });
 
     assert.isOk(userRecord);
@@ -257,7 +269,7 @@ describe('projectUserRecordRepository', () => {
     let projectUserRecord = await updateOrCreateProjectUserRecord({
       projectId: project.id,
       userId: user.id,
-      seasonNumber: 1,
+      seasonId: season.id,
     });
 
     assert.isOk(projectUserRecord);
@@ -277,7 +289,7 @@ describe('projectUserRecordRepository', () => {
     projectUserRecord = await updateOrCreateProjectUserRecord({
       projectId: project.id,
       userId: user.id,
-      seasonNumber: 1,
+      seasonId: season.id,
     });
 
     assert.isOk(projectUserRecord);
@@ -293,7 +305,7 @@ describe('projectUserRecordRepository', () => {
       roundNumber: generateEARoundNumber(),
       startDate: new Date('2024-09-01'),
       endDate: new Date('2024-09-05'),
-      seasonNumber: 1,
+      seasonId: season.id,
     });
 
     await saveDonationDirectlyToDb(
@@ -310,7 +322,7 @@ describe('projectUserRecordRepository', () => {
     const season1Record = await updateOrCreateProjectUserRecord({
       projectId: project.id,
       userId: user.id,
-      seasonNumber: 1,
+      seasonId: season.id,
     });
 
     assert.equal(season1Record.totalDonationAmount, 500);
@@ -320,7 +332,7 @@ describe('projectUserRecordRepository', () => {
       roundNumber: generateEARoundNumber(),
       startDate: new Date('2024-10-01'),
       endDate: new Date('2024-10-05'),
-      seasonNumber: 2,
+      seasonId: season.id,
     });
 
     await saveDonationDirectlyToDb(
@@ -337,7 +349,7 @@ describe('projectUserRecordRepository', () => {
     const season2Record = await updateOrCreateProjectUserRecord({
       projectId: project.id,
       userId: user.id,
-      seasonNumber: 2,
+      seasonId: season.id,
     });
 
     // Verify season 2 record is independent of season 1
@@ -347,7 +359,7 @@ describe('projectUserRecordRepository', () => {
     const season1RecordAgain = await updateOrCreateProjectUserRecord({
       projectId: project.id,
       userId: user.id,
-      seasonNumber: 1,
+      seasonId: season.id,
     });
     assert.equal(season1RecordAgain.totalDonationAmount, 500);
   });
@@ -358,7 +370,7 @@ describe('projectUserRecordRepository', () => {
       roundNumber: generateEARoundNumber(),
       startDate: new Date('2024-09-01'),
       endDate: new Date('2024-09-05'),
-      seasonNumber: 1,
+      seasonId: season.id,
       roundPOLCapPerUserPerProject: 1500, // Individual cap of 1500 POL
     });
 
@@ -371,7 +383,7 @@ describe('projectUserRecordRepository', () => {
       slug: 'QF-S1-' + generateQfRoundNumber(),
       beginDate: moment('2024-09-10').toDate(),
       endDate: moment('2024-09-20').toDate(),
-      seasonNumber: 1,
+      seasonId: season.id,
       roundPOLCapPerUserPerProject: 1500, // Individual cap of 1500 POL
     }).save();
 
@@ -403,7 +415,7 @@ describe('projectUserRecordRepository', () => {
     const season1Record = await updateOrCreateProjectUserRecord({
       projectId: project.id,
       userId: user.id,
-      seasonNumber: 1,
+      seasonId: season.id,
     });
 
     assert.equal(season1Record.totalDonationAmount, 1200); // 500 + 700
@@ -417,7 +429,7 @@ describe('projectUserRecordRepository', () => {
       roundNumber: generateEARoundNumber(),
       startDate: new Date('2024-09-01'),
       endDate: new Date('2024-09-05'),
-      seasonNumber: 1,
+      seasonId: season.id,
       roundPOLCapPerUserPerProject: 1000, // Individual cap of 1000 POL for EA
     });
 
@@ -430,7 +442,7 @@ describe('projectUserRecordRepository', () => {
       slug: 'QF-S1-' + generateQfRoundNumber(),
       beginDate: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
       endDate: new Date(Date.now() + 1000 * 60 * 60 * 24), // 1 day from now
-      seasonNumber: 1,
+      seasonId: season.id,
       roundPOLCapPerUserPerProject: 1500,
       roundPOLCapPerUserPerProjectWithGitcoinScoreOnly: 2000,
     }).save();
@@ -462,7 +474,7 @@ describe('projectUserRecordRepository', () => {
     const season1Record = await updateOrCreateProjectUserRecord({
       projectId: project.id,
       userId: user.id,
-      seasonNumber: 1,
+      seasonId: season.id,
     });
 
     // Verify EA and QF donations are tracked separately
@@ -498,7 +510,7 @@ describe('projectUserRecordRepository', () => {
       roundNumber: generateEARoundNumber(),
       startDate: new Date('2024-09-01'),
       endDate: new Date('2024-09-05'),
-      seasonNumber: 1,
+      seasonId: season.id,
     });
 
     // Create QF round in season 1
@@ -510,7 +522,7 @@ describe('projectUserRecordRepository', () => {
       slug: 'QF-S1-' + generateQfRoundNumber(),
       beginDate: moment('2024-09-10').toDate(),
       endDate: moment('2024-09-20').toDate(),
-      seasonNumber: 1,
+      seasonId: season.id,
     }).save();
 
     // Add verified and pending donations for EA round
@@ -574,7 +586,7 @@ describe('projectUserRecordRepository', () => {
     const season1Record = await updateOrCreateProjectUserRecord({
       projectId: project.id,
       userId: user.id,
-      seasonNumber: 1,
+      seasonId: season.id,
     });
 
     // Verify that both verified and pending donations are included, but failed ones are not
@@ -589,7 +601,7 @@ describe('projectUserRecordRepository', () => {
       roundNumber: generateEARoundNumber(),
       startDate: new Date('2024-09-01'),
       endDate: new Date('2024-09-05'),
-      seasonNumber: 1,
+      seasonId: season.id,
       roundPOLCapPerUserPerProject: 1000, // Individual cap of 1000 POL for EA
     });
 
@@ -602,7 +614,7 @@ describe('projectUserRecordRepository', () => {
       slug: 'QF-S1-' + generateQfRoundNumber(),
       beginDate: moment('2024-09-10').toDate(),
       endDate: moment('2024-09-20').toDate(),
-      seasonNumber: 1,
+      seasonId: season.id,
       roundPOLCapPerUserPerProject: 1500, // Individual cap of 1500 POL for QF
     }).save();
 
@@ -655,7 +667,7 @@ describe('projectUserRecordRepository', () => {
     const season1Record = await updateOrCreateProjectUserRecord({
       projectId: project.id,
       userId: user.id,
-      seasonNumber: 1,
+      seasonId: season.id,
     });
 
     // Verify EA and QF donations are tracked separately
@@ -670,7 +682,7 @@ describe('projectUserRecordRepository', () => {
       roundNumber: generateEARoundNumber(),
       startDate: new Date('2024-09-01'),
       endDate: new Date('2024-09-05'),
-      seasonNumber: 1,
+      seasonId: season.id,
       roundPOLCapPerUserPerProject: 1000,
     });
 
@@ -683,7 +695,7 @@ describe('projectUserRecordRepository', () => {
       slug: 'QF-S1-' + generateQfRoundNumber(),
       beginDate: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
       endDate: new Date(Date.now() + 1000 * 60 * 60 * 24), // 1 day from now
-      seasonNumber: 1,
+      seasonId: season.id,
       roundPOLCapPerUserPerProject: 1500,
       roundPOLCapPerUserPerProjectWithGitcoinScoreOnly: 2000,
     }).save();
@@ -715,7 +727,7 @@ describe('projectUserRecordRepository', () => {
     const season1Record = await updateOrCreateProjectUserRecord({
       projectId: project.id,
       userId: user.id,
-      seasonNumber: 1,
+      seasonId: season.id,
     });
 
     // Verify EA and QF donations are tracked separately

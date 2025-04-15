@@ -16,11 +16,12 @@ import {
 } from '../../test/graphqlQueries';
 import { Donation } from '../entities/donation';
 import { QfRoundHistory } from '../entities/qfRoundHistory';
-
+import { Season } from '../entities/season';
 describe('Fetch all Rounds test cases', fetchAllRoundsTestCases);
 describe('Fetch active Round test cases', fetchActiveRoundTestCases);
 
 function fetchAllRoundsTestCases() {
+  let season: Season;
   beforeEach(async () => {
     // Clean up data before each test case
     await Donation.createQueryBuilder()
@@ -35,6 +36,12 @@ function fetchAllRoundsTestCases() {
     await QfRoundHistory.delete({});
     await QfRound.delete({});
     await EarlyAccessRound.delete({});
+    await Season.delete({});
+    season = await Season.create({
+      seasonNumber: 1,
+      startDate: moment().subtract(1, 'month').toDate(),
+      endDate: moment().add(1, 'month').toDate(),
+    }).save();
   });
 
   after(async () => {
@@ -51,13 +58,14 @@ function fetchAllRoundsTestCases() {
     await QfRoundHistory.delete({});
     await QfRound.delete({});
     await EarlyAccessRound.delete({});
+    await Season.delete({});
   });
 
   it('should return all rounds (QF Rounds and Early Access Rounds)', async () => {
     // Create Early Access Rounds
     const earlyAccessRound1 = await EarlyAccessRound.create({
       roundNumber: generateEARoundNumber(),
-      seasonNumber: 1,
+      seasonId: season.id,
       startDate: new Date(),
       endDate: moment().add(3, 'days').toDate(),
       roundPOLCapPerProject: 1_000_000,
@@ -66,7 +74,7 @@ function fetchAllRoundsTestCases() {
 
     const earlyAccessRound2 = await EarlyAccessRound.create({
       roundNumber: generateEARoundNumber(),
-      seasonNumber: 1,
+      seasonId: season.id,
       startDate: moment().add(4, 'days').toDate(),
       endDate: moment().add(7, 'days').toDate(),
       roundPOLCapPerProject: 2_000_000,
@@ -78,7 +86,7 @@ function fetchAllRoundsTestCases() {
       name: 'QF Round 1',
       slug: generateRandomString(10),
       roundNumber: 1,
-      seasonNumber: 1,
+      seasonId: season.id,
       allocatedFund: 100000,
       minimumPassportScore: 8,
       beginDate: new Date(),
@@ -91,7 +99,7 @@ function fetchAllRoundsTestCases() {
       name: 'QF Round 2',
       slug: generateRandomString(10),
       roundNumber: 2,
-      seasonNumber: 1,
+      seasonId: season.id,
       allocatedFund: 200_000,
       minimumPassportScore: 10,
       beginDate: moment().add(5, 'days').toDate(),
@@ -169,6 +177,7 @@ function fetchAllRoundsTestCases() {
 }
 
 function fetchActiveRoundTestCases() {
+  let season: Season;
   beforeEach(async () => {
     // Clean up data before each test case
     await Donation.createQueryBuilder()
@@ -183,6 +192,12 @@ function fetchActiveRoundTestCases() {
     await QfRoundHistory.delete({});
     await QfRound.delete({});
     await EarlyAccessRound.delete({});
+    await Season.delete({});
+    season = await Season.create({
+      seasonNumber: 1,
+      startDate: moment().subtract(1, 'month').toDate(),
+      endDate: moment().add(1, 'month').toDate(),
+    }).save();
   });
 
   after(async () => {
@@ -199,13 +214,14 @@ function fetchActiveRoundTestCases() {
     await QfRoundHistory.delete({});
     await QfRound.delete({});
     await EarlyAccessRound.delete({});
+    await Season.delete({});
   });
 
   it('should return the currently active Early Access round and no active QF round', async () => {
     // Create an active Early Access Round
     const activeEarlyAccessRound = await EarlyAccessRound.create({
       roundNumber: generateEARoundNumber(),
-      seasonNumber: 1,
+      seasonId: season.id,
       startDate: moment().subtract(1, 'days').toDate(),
       endDate: moment().add(2, 'days').toDate(),
       roundPOLCapPerProject: 500000,
@@ -217,7 +233,7 @@ function fetchActiveRoundTestCases() {
       name: 'Inactive QF Round',
       slug: generateRandomString(10),
       roundNumber: generateQfRoundNumber(),
-      seasonNumber: 1,
+      seasonId: season.id,
       allocatedFund: 50000,
       minimumPassportScore: 7,
       beginDate: moment().add(10, 'days').toDate(),
@@ -250,7 +266,7 @@ function fetchActiveRoundTestCases() {
     // Create a non-active Early Access Round
     await EarlyAccessRound.create({
       roundNumber: generateEARoundNumber(),
-      seasonNumber: 1,
+      seasonId: season.id,
       startDate: moment().add(10, 'days').toDate(),
       endDate: moment().add(20, 'days').toDate(),
     }).save();
@@ -260,7 +276,7 @@ function fetchActiveRoundTestCases() {
       name: 'Active QF Round',
       slug: generateRandomString(10),
       roundNumber: 1,
-      seasonNumber: 1,
+      seasonId: season.id,
       allocatedFund: 100000,
       minimumPassportScore: 8,
       beginDate: moment().subtract(1, 'days').toDate(),
@@ -292,7 +308,7 @@ function fetchActiveRoundTestCases() {
       name: 'Active QF Round',
       slug: generateRandomString(10),
       roundNumber: 1,
-      seasonNumber: 1,
+      seasonId: season.id,
       allocatedFund: 100000,
       minimumPassportScore: 8,
       beginDate: moment().add(1, 'days').toDate(),
@@ -319,7 +335,7 @@ function fetchActiveRoundTestCases() {
       name: 'Active QF Round',
       slug: generateRandomString(10),
       roundNumber: 1,
-      seasonNumber: 1,
+      seasonId: season.id,
       allocatedFund: 100000,
       minimumPassportScore: 8,
       beginDate: moment().subtract(5, 'days').toDate(),
@@ -344,7 +360,7 @@ function fetchActiveRoundTestCases() {
     // Create a non-active Early Access Round
     await EarlyAccessRound.create({
       roundNumber: generateEARoundNumber(),
-      seasonNumber: 1,
+      seasonId: season.id,
       startDate: moment().add(10, 'days').toDate(),
       endDate: moment().add(20, 'days').toDate(),
     }).save();
@@ -354,7 +370,7 @@ function fetchActiveRoundTestCases() {
       name: 'Inactive QF Round',
       slug: generateRandomString(10),
       roundNumber: generateQfRoundNumber(),
-      seasonNumber: 1,
+      seasonId: season.id,
       allocatedFund: 50000,
       minimumPassportScore: 7,
       beginDate: moment().add(10, 'days').toDate(),

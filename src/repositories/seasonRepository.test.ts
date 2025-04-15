@@ -23,8 +23,8 @@ describe('Season Repository Test Cases', () => {
   it('should create a new season', async () => {
     const seasonData = {
       seasonNumber: 1,
-      startDate: new Date('2024-01-01'),
-      endDate: new Date('2024-12-31'),
+      startDate: moment().startOf('year').toDate(),
+      endDate: moment().endOf('year').toDate(),
     };
 
     const season = await createSeason(seasonData);
@@ -44,8 +44,8 @@ describe('Season Repository Test Cases', () => {
   it('should find a season by ID', async () => {
     const season = await createSeason({
       seasonNumber: 1,
-      startDate: new Date('2024-01-01'),
-      endDate: new Date('2024-12-31'),
+      startDate: moment().startOf('year').toDate(),
+      endDate: moment().endOf('year').toDate(),
     });
 
     const foundSeason = await findSeasonById(season.id);
@@ -58,8 +58,8 @@ describe('Season Repository Test Cases', () => {
   it('should find a season by number', async () => {
     const season = await createSeason({
       seasonNumber: 1,
-      startDate: new Date('2024-01-01'),
-      endDate: new Date('2024-12-31'),
+      startDate: moment().startOf('year').toDate(),
+      endDate: moment().endOf('year').toDate(),
     });
 
     const foundSeason = await findSeasonByNumber(season.seasonNumber);
@@ -73,8 +73,8 @@ describe('Season Repository Test Cases', () => {
     // Create a past season
     await createSeason({
       seasonNumber: 1,
-      startDate: new Date('2023-01-01'),
-      endDate: new Date('2023-12-31'),
+      startDate: moment().subtract(2, 'years').startOf('year').toDate(),
+      endDate: moment().subtract(2, 'years').endOf('year').toDate(),
     });
 
     // Create an active season
@@ -87,8 +87,8 @@ describe('Season Repository Test Cases', () => {
     // Create a future season
     await createSeason({
       seasonNumber: 3,
-      startDate: new Date('2025-01-01'),
-      endDate: new Date('2025-12-31'),
+      startDate: moment().add(1, 'year').startOf('year').toDate(),
+      endDate: moment().add(1, 'year').endOf('year').toDate(),
     });
 
     const foundActiveSeason = await findActiveSeasonByDate();
@@ -102,20 +102,20 @@ describe('Season Repository Test Cases', () => {
     // Create multiple seasons
     const season1 = await createSeason({
       seasonNumber: 1,
-      startDate: new Date('2023-01-01'),
-      endDate: new Date('2023-12-31'),
+      startDate: moment().subtract(1, 'year').startOf('year').toDate(),
+      endDate: moment().subtract(1, 'year').endOf('year').toDate(),
     });
 
     const season2 = await createSeason({
       seasonNumber: 2,
-      startDate: new Date('2024-01-01'),
-      endDate: new Date('2024-12-31'),
+      startDate: moment().startOf('year').toDate(),
+      endDate: moment().endOf('year').toDate(),
     });
 
     const season3 = await createSeason({
       seasonNumber: 3,
-      startDate: new Date('2025-01-01'),
-      endDate: new Date('2025-12-31'),
+      startDate: moment().add(1, 'year').startOf('year').toDate(),
+      endDate: moment().add(1, 'year').endOf('year').toDate(),
     });
 
     const seasons = await findAllSeasons();
@@ -130,14 +130,14 @@ describe('Season Repository Test Cases', () => {
     // Create only past and future seasons
     await createSeason({
       seasonNumber: 1,
-      startDate: new Date('2023-01-01'),
-      endDate: new Date('2023-12-31'),
+      startDate: moment().subtract(2, 'years').toDate(),
+      endDate: moment().subtract(1, 'year').toDate(),
     });
 
     await createSeason({
       seasonNumber: 2,
-      startDate: new Date('2025-01-01'),
-      endDate: new Date('2025-12-31'),
+      startDate: moment().add(1, 'year').toDate(),
+      endDate: moment().add(2, 'years').toDate(),
     });
 
     const activeSeason = await findActiveSeasonByDate();
