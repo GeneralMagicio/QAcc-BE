@@ -8,9 +8,6 @@ export class AddSeasonsTable1744677815994 implements MigrationInterface {
       `ALTER TABLE "donation" DROP CONSTRAINT "FK_donation_swap_transaction"`,
     );
     await queryRunner.query(
-      `DROP INDEX "public"."IDX_8a3ae83457d9e924776f4f9b58"`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "project_user_record" RENAME COLUMN "seasonNumber" TO "seasonId"`,
     );
     await queryRunner.query(
@@ -88,9 +85,6 @@ export class AddSeasonsTable1744677815994 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "project_user_record" RENAME COLUMN "seasonId" TO "seasonNumber"`,
-    );
-    await queryRunner.query(
-      `CREATE UNIQUE INDEX "IDX_8a3ae83457d9e924776f4f9b58" ON "project_user_record" ("projectId", "userId", "seasonNumber") `,
     );
     await queryRunner.query(
       `ALTER TABLE "donation" ADD CONSTRAINT "FK_donation_swap_transaction" FOREIGN KEY ("swapTransactionId") REFERENCES "swap_transaction"("id") ON DELETE SET NULL ON UPDATE NO ACTION`,
