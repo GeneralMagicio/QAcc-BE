@@ -29,24 +29,28 @@ export class AppDataSource {
       AppDataSource.datasource = new DataSource({
         schema: 'public',
         type: 'postgres',
-        replication: {
-          defaultMode: 'master',
-          master: {
-            database: config.get('TYPEORM_DATABASE_NAME') as string,
-            username: config.get('TYPEORM_DATABASE_USER') as string,
-            password: config.get('TYPEORM_DATABASE_PASSWORD') as string,
-            port: config.get('TYPEORM_DATABASE_PORT') as number,
-            host: config.get('TYPEORM_DATABASE_HOST') as string,
-          },
-          slaves,
-        },
+        // replication: {
+        //   defaultMode: 'master',
+        //   master: {
+        //     database: config.get('TYPEORM_DATABASE_NAME') as string,
+        //     username: config.get('TYPEORM_DATABASE_USER') as string,
+        //     password: config.get('TYPEORM_DATABASE_PASSWORD') as string,
+        //     port: config.get('TYPEORM_DATABASE_PORT') as number,
+        //     host: config.get('TYPEORM_DATABASE_HOST') as string,
+        //   },
+        //   slaves,
+        // },
+        url: config.get('TYPEORM_DATABASE_URL') as string,
 
         entities,
         synchronize,
         dropSchema,
         logger: 'advanced-console',
         logging: ['error'],
-        // ssl: config.get('TYPEORM_DISABLE_SSL') === 'true' ? false : undefined, // use default in case it's not set
+        ssl:
+          config.get('TYPEORM_DISABLE_SSL') === 'true'
+            ? false
+            : { rejectUnauthorized: false },
         cache: isTestEnv
           ? false
           : {
