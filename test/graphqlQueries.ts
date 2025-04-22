@@ -11,6 +11,7 @@ export const createDonationMutation = `
     $anonymous: Boolean
     $referrerId: String
     $safeTransactionId: String
+    $swapData: SwapTransactionInput
   ) {
     createDonation(
       transactionId: $transactionId
@@ -24,6 +25,7 @@ export const createDonationMutation = `
       anonymous: $anonymous
       referrerId: $referrerId
       safeTransactionId: $safeTransactionId
+      swapData: $swapData
     )
   }
 `;
@@ -144,6 +146,7 @@ export const createProjectQuery = `
           chainId
         }
         tributeClaimModuleAddress
+        tributeRecipientAddress
       }
   }
   `;
@@ -199,6 +202,7 @@ export const updateProjectQuery = `
         projectAddress
       }
       tributeClaimModuleAddress
+      tributeRecipientAddress
     }
   }
  `;
@@ -1016,6 +1020,7 @@ export const fetchProjectBySlugQuery = `
         chainId
       }
       tributeClaimModuleAddress
+      tributeRecipientAddress
     }
   }
 `;
@@ -1204,6 +1209,8 @@ export const userByAddress = `
       passportStamps
       privadoVerified
       acceptedToS
+      qaccPoints
+      qaccPointsMultiplier
     }
   }
 `;
@@ -1536,6 +1543,7 @@ export const projectByIdQuery = `
         chainId
       }
       tributeClaimModuleAddress
+      tributeRecipientAddress
     }
   }
 `;
@@ -2079,11 +2087,10 @@ export const fetchAllRoundsQuery = `
         endDate
         createdAt
         updatedAt
-        roundUSDCapPerProject
-        roundUSDCapPerUserPerProject
-        tokenPrice
-        cumulativeUSDCapPerProject
-        cumulativeUSDCapPerUserPerProject
+        roundPOLCapPerProject
+        roundPOLCapPerUserPerProject
+        cumulativePOLCapPerProject
+        cumulativePOLCapPerUserPerProject
       }
       ... on QfRound {
         name
@@ -2091,11 +2098,10 @@ export const fetchAllRoundsQuery = `
         allocatedFund
         beginDate
         endDate
-        roundUSDCapPerProject
-        roundUSDCapPerUserPerProject
-        tokenPrice
-        cumulativeUSDCapPerProject
-        cumulativeUSDCapPerUserPerProject
+        roundPOLCapPerProject
+        roundPOLCapPerUserPerProject
+        cumulativePOLCapPerProject
+        cumulativePOLCapPerUserPerProject
       }
     }
   }
@@ -2111,11 +2117,10 @@ export const fetchActiveRoundQuery = `
           endDate
           createdAt
           updatedAt
-          roundUSDCapPerProject
-          roundUSDCapPerUserPerProject
-          tokenPrice
-          cumulativeUSDCapPerProject
-          cumulativeUSDCapPerUserPerProject
+          roundPOLCapPerProject
+          roundPOLCapPerUserPerProject
+          cumulativePOLCapPerProject
+          cumulativePOLCapPerUserPerProject
         }
         ... on QfRound {
           name
@@ -2123,11 +2128,10 @@ export const fetchActiveRoundQuery = `
           allocatedFund
           beginDate
           endDate
-          roundUSDCapPerProject
-          roundUSDCapPerUserPerProject
-          tokenPrice
-          cumulativeUSDCapPerProject
-          cumulativeUSDCapPerUserPerProject
+          roundPOLCapPerProject
+          roundPOLCapPerUserPerProject
+          cumulativePOLCapPerProject
+          cumulativePOLCapPerUserPerProject
         }
       }
     }
@@ -2224,3 +2228,39 @@ export const qAccStat = `
     }
   }
 `;
+
+export const getQaccPointsHistoryOfUser = `
+query getQaccPointsHistory {
+  getQaccPointsHistory {
+    pointsEarned
+    user{
+      name
+    }
+    donation{
+      id
+      
+    }
+  }
+}
+`;
+
+export const getUsersByQaccPoints = `query ( $take: Int,$skip:Int,$orderBy:SortUserBy,$walletAddress:String) {
+  getUsersByQaccPoints(
+    take: $take
+    skip:$skip
+    orderBy:$orderBy
+    walletAddress:$walletAddress
+  ){
+    users{
+   id
+    name
+    email
+    qaccPoints
+    walletAddress
+    qaccPointsMultiplier
+    projectsFundedCount
+    }
+    totalCount
+    
+  }
+}`;

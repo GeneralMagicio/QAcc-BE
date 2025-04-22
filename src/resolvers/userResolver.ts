@@ -2,6 +2,7 @@ import {
   Arg,
   Ctx,
   Field,
+  InputType,
   Int,
   Mutation,
   ObjectType,
@@ -9,10 +10,10 @@ import {
   registerEnumType,
   Resolver,
 } from 'type-graphql';
-import { Brackets, Repository } from 'typeorm';
+import { Brackets, MoreThan, Repository } from 'typeorm';
 
 import moment from 'moment';
-import { User } from '../entities/user';
+import { User, UserOrderField } from '../entities/user';
 import { AccountVerificationInput } from './types/accountVerificationInput';
 import { ApolloContext } from '../types/ApolloContext';
 import { i18n, translationErrorMessagesKeys } from '../utils/errorMessages';
@@ -41,6 +42,7 @@ import {
   GITCOIN_PASSPORT_MIN_VALID_ANALYSIS_SCORE,
   GITCOIN_PASSPORT_MIN_VALID_SCORER_SCORE,
 } from '../constants/gitcoin';
+import { UserRankMaterializedView } from '../entities/userRanksMaterialized';
 
 @ObjectType()
 class UserRelatedAddressResponse {
@@ -56,10 +58,34 @@ export enum UserKycType {
   GTCPass = 'GTCPass',
 }
 
+enum UserSortDirection {
+  ASC = 'ASC',
+  DESC = 'DESC',
+}
+
 registerEnumType(UserKycType, {
   name: 'UserKycType',
   description: 'User KYC type either Privado zk ID or Gitcoin Passport',
 });
+
+registerEnumType(UserOrderField, {
+  name: 'UserOrderField',
+  description: 'Sort by field',
+});
+
+registerEnumType(UserSortDirection, {
+  name: 'UserSortDirection',
+  description: 'Sort direction',
+});
+
+@InputType()
+class SortUserBy {
+  @Field(_type => UserOrderField)
+  field: UserOrderField;
+
+  @Field(_type => UserSortDirection)
+  direction: UserSortDirection;
+}
 
 @ObjectType()
 class EligibleUser {
@@ -91,6 +117,15 @@ class BatchMintingEligibleUserV2Response {
 
   @Field(_offset => Number, { nullable: false })
   skip: number;
+}
+
+@ObjectType()
+class PaginatedUsers {
+  @Field(_type => [User], { nullable: true })
+  users: User[];
+
+  @Field(_type => Number, { nullable: true })
+  totalCount: number;
 }
 
 // eslint-disable-next-line unused-imports/no-unused-imports
@@ -268,6 +303,34 @@ export class UserResolver {
       total: count,
       skip,
     };
+  }
+
+  @Query(_returns => PaginatedUsers)
+  async getUsersByQaccPoints(
+    @Arg('take', _type => Int, { defaultValue: 15 }) take: number,
+    @Arg('skip', _type => Int, { defaultValue: 0 }) skip: number,
+    @Arg('orderBy', _type => SortUserBy, {
+      defaultValue: {
+        field: UserOrderField.QaccPoints,
+        direction: UserSortDirection.DESC,
+      },
+    })
+    orderBy: SortUserBy,
+    @Arg('walletAddress', _type => String, { nullable: true })
+    walletAddress?: string,
+  ) {
+    const whereCondition: any = { qaccPoints: MoreThan(0) };
+    if (walletAddress) {
+      whereCondition.walletAddress = walletAddress;
+    }
+    const [users, totalCount] = await UserRankMaterializedView.findAndCount({
+      where: whereCondition,
+      order: { [orderBy.field]: orderBy.direction },
+      take,
+      skip,
+    });
+
+    return { users, totalCount };
   }
 
   @Mutation(_returns => Boolean)
@@ -528,12 +591,7 @@ export class UserResolver {
 
     const userFromDB = await findUserById(user.userId);
 
-    if (
-      (userFromDB?.hasEnoughGitcoinAnalysisScore ||
-        userFromDB?.hasEnoughGitcoinPassportScore ||
-        userFromDB?.privadoVerified) &&
-      !userFromDB.acceptedToS
-    ) {
+    if (userFromDB && !userFromDB.acceptedToS) {
       userFromDB.acceptedToS = true;
       userFromDB.acceptedToSDate = new Date();
       await userFromDB.save();

@@ -59,6 +59,7 @@ import {
   QACC_DONATION_TOKEN_SYMBOL,
 } from '../constants/qacc';
 import { ApolloContext } from '../types/ApolloContext';
+import { updateUserRanks } from './cronJobs/updateUserRanks';
 
 export const TRANSAK_COMPLETED_STATUS = 'COMPLETED';
 
@@ -281,6 +282,7 @@ export const syncDonationStatusWithBlockchainNetwork = async (params: {
       chainType: donation.chainType,
       safeTxHash: donation.safeTransactionId,
       timestamp: donation.createdAt.getTime() / 1000,
+      isSwap: donation.isSwap,
     });
     donation.status = DONATION_STATUS.VERIFIED;
 
@@ -315,6 +317,7 @@ export const syncDonationStatusWithBlockchainNetwork = async (params: {
     //   }
     // }
     await donation.save();
+    await updateUserRanks();
 
     // ONLY verified donations should be accumulated
     // After updating, recalculate user and project total donations
@@ -712,7 +715,8 @@ const ankrTransferHandler = async (transfer: TokenTransfer) => {
       undefined, // draft donation id
       undefined, // use donationBox
       undefined, // relevant donation tx hash
-
+      undefined, // swapData
+      undefined, //fromTokenAmount
       new Date(transfer.timestamp * 1000),
     );
 

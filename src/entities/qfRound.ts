@@ -27,6 +27,10 @@ export class QfRound extends BaseEntity {
   roundNumber?: number;
 
   @Field({ nullable: true })
+  @Column('integer', { nullable: true })
+  seasonNumber?: number;
+
+  @Field({ nullable: true })
   @Column('text', { nullable: true })
   name: string;
 
@@ -83,7 +87,7 @@ export class QfRound extends BaseEntity {
   @Column('real', { default: 1 })
   minimumValidUsdValue: number;
 
-  @Field(_type => [Int], { nullable: true }) // Define the new field as an array of integers
+  @Field(_type => [Int], { nullable: true })
   @Column('integer', { array: true, default: [] })
   eligibleNetworks: number[];
 
@@ -107,10 +111,6 @@ export class QfRound extends BaseEntity {
   @Column({ default: false })
   isDataAnalysisDone: boolean;
 
-  @Field({ nullable: true })
-  @Column({ type: 'float', nullable: true })
-  tokenPrice?: number;
-
   @UpdateDateColumn()
   updatedAt: Date;
 
@@ -125,30 +125,30 @@ export class QfRound extends BaseEntity {
 
   @Field(() => Int, { nullable: true })
   @Column({ nullable: true })
-  roundUSDCapPerProject?: number;
+  roundPOLCapPerProject?: number;
 
   @Field(() => Int, { nullable: true })
   @Column({ nullable: true })
-  roundUSDCloseCapPerProject?: number;
+  roundPOLCloseCapPerProject?: number;
 
   @Field(() => Int, { nullable: true })
   @Column({ nullable: true })
-  roundUSDCapPerUserPerProject?: number;
+  roundPOLCapPerUserPerProject?: number;
 
   @Field(() => Int, { nullable: true })
   @Column({ nullable: true })
-  roundUSDCapPerUserPerProjectWithGitcoinScoreOnly?: number;
+  roundPOLCapPerUserPerProjectWithGitcoinScoreOnly?: number;
 
   @Field(_type => Boolean)
   @Column({ default: false })
   isBatchMintingExecuted: boolean;
 
-  // Virtual fields for cumulative caps
+  // virtual fields
   @Field(() => Float, { nullable: true })
-  cumulativeUSDCapPerProject?: number;
+  cumulativePOLCapPerProject?: number;
 
   @Field(() => Float, { nullable: true })
-  cumulativeUSDCapPerUserPerProject?: number;
+  cumulativePOLCapPerUserPerProject?: number;
 
   // only projects with status active can be listed automatically
   isEligibleNetwork(donationNetworkId: number): boolean {
@@ -160,13 +160,38 @@ export class QfRound extends BaseEntity {
 
   @AfterLoad()
   async calculateCumulativeCaps() {
-    if (this.roundNumber === 1) {
-      this.cumulativeUSDCapPerProject = this.roundUSDCapPerProject || 0;
-      this.cumulativeUSDCapPerUserPerProject =
-        this.roundUSDCapPerUserPerProject || 0;
+    // Get all QF rounds in the same season ordered by roundNumber
+    if (this.seasonNumber) {
+      const { cumulativePOLCapPerProject, cumulativePOLCapPerUserPerProject } =
+        await QfRound.createQueryBuilder('qfRound')
+          .select(
+            'sum(qfRound.roundPOLCapPerProject)',
+            'cumulativePOLCapPerProject',
+          )
+          .addSelect(
+            'sum(qfRound.roundPOLCapPerUserPerProject)',
+            'cumulativePOLCapPerUserPerProject',
+          )
+          .where('qfRound.roundNumber <= :roundNumber', {
+            roundNumber: this.roundNumber,
+          })
+          .andWhere('qfRound.seasonNumber = :seasonNumber', {
+            seasonNumber: this.seasonNumber,
+          })
+          .cache('cumulativeCapQfRound-' + this.roundNumber, 300000)
+          .getRawOne();
+
+      this.cumulativePOLCapPerProject = parseFloat(
+        cumulativePOLCapPerProject || '0',
+      );
+      this.cumulativePOLCapPerUserPerProject = parseFloat(
+        cumulativePOLCapPerUserPerProject || '0',
+      );
     } else {
-      this.cumulativeUSDCapPerProject = 0;
-      this.cumulativeUSDCapPerUserPerProject = 0;
+      // If no season number, just use the round's own caps
+      this.cumulativePOLCapPerProject = this.roundPOLCapPerProject || 0;
+      this.cumulativePOLCapPerUserPerProject =
+        this.roundPOLCapPerUserPerProject || 0;
     }
   }
 }

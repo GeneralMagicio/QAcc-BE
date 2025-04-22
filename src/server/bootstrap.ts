@@ -64,9 +64,9 @@ import {
 import { QACC_NETWORK_ID } from '../provider';
 import { Token } from '../entities/token';
 import { ChainType } from '../types/network';
-import { runFetchRoundTokenPrice } from '../services/cronJobs/fetchRoundTokenPrice';
 import { runSyncDataWithInverter } from '../services/cronJobs/syncDataWithInverter';
 import { runSyncWithAnkrTransfers } from '../services/cronJobs/syncWithAnkrTransfers';
+import { runCheckPendingSwapsCronJob } from '../services/cronJobs/syncSwapTransactions';
 
 Resource.validate = validate;
 
@@ -160,6 +160,10 @@ export async function bootstrap() {
 
     runNotifyMissingDonationsCronJob();
 
+    runCheckPendingSwapsCronJob();
+
+    // runUpdateUserRanksCronJob();
+
     if (process.env.ENABLE_IMPORT_LOST_DONATIONS === 'true') {
       runSyncLostDonations();
     }
@@ -189,16 +193,6 @@ export async function bootstrap() {
     await runUpdateProjectCampaignsCacheJob();
     logger.debug(
       'initializeCronJobs() after runUpdateProjectCampaignsCacheJob() ',
-      new Date(),
-    );
-
-    logger.debug(
-      'initializeCronJobs() before runFetchRoundTokenPrice() ',
-      new Date(),
-    );
-    await runFetchRoundTokenPrice();
-    logger.debug(
-      'initializeCronJobs() after runFetchRoundTokenPrice() ',
       new Date(),
     );
 

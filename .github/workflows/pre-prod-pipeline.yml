@@ -2,12 +2,12 @@ name: pre-prod-pipeline
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - test-production
-  pull_request:
-    branches:
-      - test-production
+  # push:
+  #   branches:
+  #     - test-production
+  # pull_request:
+  #   branches:
+  #     - test-production
 
 jobs:
   run-linters:
