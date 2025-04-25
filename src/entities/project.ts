@@ -46,6 +46,7 @@ import { EstimatedMatching } from '../types/qfTypes';
 import { Campaign } from './campaign';
 import { ProjectEstimatedMatchingView } from './ProjectEstimatedMatchingView';
 import { ProjectSocialMedia } from './projectSocialMedia';
+import { EarlyAccessRound } from './earlyAccessRound';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const moment = require('moment');
 
@@ -178,6 +179,10 @@ export class Project extends BaseEntity {
   @Column()
   title: string;
 
+  @Field({ nullable: true })
+  @Column('integer', { nullable: true })
+  seasonNumber?: number;
+
   @Index({ unique: true })
   @Field({ nullable: true })
   @Column({ nullable: true })
@@ -263,6 +268,10 @@ export class Project extends BaseEntity {
   @Column({ nullable: true })
   tributeClaimModuleAddress: string;
 
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  tributeRecipientAddress: string;
+
   @Index('trgm_idx_project_impact_location', { synchronize: false })
   @Field({ nullable: true })
   @Column({ nullable: true })
@@ -281,6 +290,17 @@ export class Project extends BaseEntity {
   })
   @JoinTable()
   qfRounds: QfRound[];
+
+  @Field(_type => [EarlyAccessRound], { nullable: true })
+  @ManyToMany(
+    _type => EarlyAccessRound,
+    earlyAccessRound => earlyAccessRound.projects,
+    {
+      nullable: true,
+    },
+  )
+  @JoinTable()
+  earlyAccessRounds: EarlyAccessRound[];
 
   @Field(_type => Float, { nullable: true })
   @Column('float', { nullable: true })
@@ -475,6 +495,10 @@ export class Project extends BaseEntity {
   @Field(_type => Int, { nullable: true })
   @Column({ type: 'int', nullable: true })
   matchingFunds?: number;
+
+  @Field(_type => Boolean)
+  @Column({ type: 'boolean', default: false })
+  hasEARound: boolean;
 
   // only projects with status active can be listed automatically
   static pendingReviewSince(maximumDaysForListing: number) {

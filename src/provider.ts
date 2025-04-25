@@ -28,6 +28,8 @@ export const NETWORK_IDS = {
   ZKEVM_MAINNET: 1101,
   ZKEVM_CARDONA: 2442,
 
+  POLYGON_AMOY: 80002,
+
   LINEA_MAINNET: 59144,
   LINEA_SEPOLIA: 59141,
 
@@ -191,7 +193,7 @@ const NETWORK_NATIVE_TOKENS = {
   MAINNET: 'ETH',
   ROPSTEN: 'ETH',
   GOERLI: 'ETH',
-  POLYGON: 'MATIC',
+  POLYGON: 'POL',
   OPTIMISTIC: 'ETH',
   OPTIMISM_SEPOLIA: 'ETH',
   CELO: 'CELO',
@@ -419,6 +421,10 @@ export function getProvider(networkId: number) {
 
     case NETWORK_IDS.ZKEVM_CARDONA:
       url = process.env.ZKEVM_CARDONA_NODE_HTTP_URL as string;
+      break;
+
+    case NETWORK_IDS.POLYGON_AMOY:
+      url = process.env.POLYGON_AMOY_NODE_HTTP_URL as string;
       break;
 
     default: {

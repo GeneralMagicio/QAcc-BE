@@ -15,6 +15,7 @@ import {
   GITCOIN_PASSPORT_MIN_VALID_SCORER_SCORE,
 } from '../constants/gitcoin';
 import { Donation, DONATION_STATUS } from '../entities/donation';
+// import { Project } from '../entities/project';
 
 const getEaProjectRoundRecord = async ({
   projectId,
@@ -68,17 +69,20 @@ const getQfProjectRoundRecord = async ({
   return projectRoundRecord;
 };
 
-const getUserProjectRecord = async ({
+const getUserProjectSeasonRecord = async ({
   projectId,
   userId,
+  seasonNumber,
 }: {
   projectId: number;
   userId: number;
-}): Promise<ProjectUserRecord> => {
+  seasonNumber?: number;
+}): Promise<ProjectUserRecord | null> => {
   const findCondition: FindOneOptions<ProjectUserRecord> = {
     where: {
       projectId,
       userId,
+      seasonNumber,
     },
     select: [
       'id',
@@ -91,11 +95,11 @@ const getUserProjectRecord = async ({
   let projectUserRecord = await ProjectUserRecord.findOne(findCondition);
 
   if (!projectUserRecord) {
-    await updateOrCreateProjectUserRecord({ projectId, userId });
+    await updateOrCreateProjectUserRecord({ projectId, userId, seasonNumber });
     projectUserRecord = await ProjectUserRecord.findOne(findCondition);
   }
 
-  return projectUserRecord!;
+  return projectUserRecord;
 };
 
 const getQAccDonationCap = async ({
@@ -116,6 +120,17 @@ const getQAccDonationCap = async ({
 
   if (isEarlyAccess) {
     activeRound = activeEarlyAccessRound;
+    // todo: if we need to having some project in early access round, we need to check this
+    // Check if project is in the active early access round
+    // const project = await Project.findOne({
+    //   where: { id: projectId },
+    //   relations: ['earlyAccessRounds'],
+    // });
+    // if (
+    //   !project?.earlyAccessRounds?.some(round => round.id === activeRound?.id)
+    // ) {
+    //   return 0; // Project is not in this early access round
+    // }
   } else {
     activeQfRound = await findActiveQfRound({
       date: donateTime,
@@ -127,6 +142,15 @@ const getQAccDonationCap = async ({
       donateTime <= activeQfRound.endDate
     ) {
       activeRound = activeQfRound;
+      // todo: if we need to having some project in qf round, we need to check this
+      // Check if project is in the active QF round
+      // const project = await Project.findOne({
+      //   where: { id: projectId },
+      //   relations: ['qfRounds'],
+      // });
+      // if (!project?.qfRounds?.some(round => round.id === activeRound?.id)) {
+      //   return 0; // Project is not in this QF round
+      // }
     }
   }
 
@@ -134,14 +158,8 @@ const getQAccDonationCap = async ({
     return 0;
   }
 
-  const cumulativeUSDCapPerProject =
-    activeRound.cumulativeUSDCapPerProject || 0;
-  const cumulativeUSDCapPerUserPerProject =
-    activeRound.cumulativeUSDCapPerUserPerProject || 0;
-  const tokenPrice = activeRound.tokenPrice || Number.MAX_SAFE_INTEGER;
-
-  const projectPolRoundCap = cumulativeUSDCapPerProject / tokenPrice;
-  const userPolRoundCap = cumulativeUSDCapPerUserPerProject / tokenPrice;
+  const projectPolRoundCap = activeRound.cumulativePOLCapPerProject || 0;
+  const userPolRoundCap = activeRound.cumulativePOLCapPerUserPerProject || 0;
 
   if (isEarlyAccess) {
     const projectRecord = await getEaProjectRoundRecord({
@@ -154,9 +172,10 @@ const getQAccDonationCap = async ({
       return 0;
     }
 
-    const userRecord = await getUserProjectRecord({
+    const userRecord = await getUserProjectSeasonRecord({
       projectId,
       userId,
+      seasonNumber: activeRound.seasonNumber,
     });
 
     return Math.max(
@@ -165,7 +184,7 @@ const getQAccDonationCap = async ({
         projectPolRoundCap -
           projectRecord.totalDonationAmount -
           (projectRecord.cumulativePastRoundsDonationAmounts || 0), // project unused cap
-        userPolRoundCap - userRecord.totalDonationAmount, // user unused cap
+        userPolRoundCap - (userRecord?.eaTotalDonationAmount || 0), // user unused cap for EA rounds only
       ),
     );
   } else {
@@ -175,31 +194,42 @@ const getQAccDonationCap = async ({
       qfRoundId: activeRound.id,
     });
 
-    const userRecord = await getUserProjectRecord({
+    // Get user's donations for this season (only QF round donations count towards cap)
+    const userRecord = await getUserProjectSeasonRecord({
       projectId,
       userId,
+      seasonNumber: activeRound.seasonNumber,
     });
 
-    const projectCloseCap =
-      (activeQfRound?.roundUSDCloseCapPerProject || 0) / tokenPrice;
+    const projectCloseCap = activeQfRound?.roundPOLCloseCapPerProject || 0;
 
+    // Calculate total collected across all rounds
     const totalCollected =
       (projectRecord?.totalDonationAmount || 0) +
       (projectRecord?.cumulativePastRoundsDonationAmounts || 0);
 
+    // If project has reached total cap across all rounds, return 0
+    if (totalCollected >= projectCloseCap) {
+      return 0;
+    }
+
+    // Calculate remaining project cap considering all rounds
+    const remainingProjectCap = projectPolRoundCap - totalCollected;
+
+    // Calculate project cap considering close cap
     const projectCap = Math.max(
-      // Capacity to fill qf round cap
-      projectPolRoundCap - totalCollected,
-      // Capacity over the qr found cap per project
+      remainingProjectCap,
       Math.min(
-        250 / tokenPrice, // 250 USD between qf round cap and qf round close
+        250, // 250 POL between qf round cap and qf round close
         projectCloseCap - totalCollected, // project close cap
       ),
     );
 
-    const anyUserCall = Math.min(projectCap, userPolRoundCap);
+    // User cap only considers QF round donations
+    const anyUserCap = Math.min(projectCap, userPolRoundCap);
 
-    return Math.max(0, anyUserCall - userRecord.qfTotalDonationAmount);
+    // Only subtract QF donations from the user cap
+    return Math.max(0, anyUserCap - (userRecord?.qfTotalDonationAmount || 0));
   }
 };
 
@@ -228,23 +258,24 @@ const getUserRemainedCapBasedOnGitcoinScore = async ({
        and passport score is less than ${GITCOIN_PASSPORT_MIN_VALID_SCORER_SCORE}`,
     );
   }
-  const userRecord = await getUserProjectRecord({
+  const activeQfRound = await findActiveQfRound();
+  if (!activeQfRound) {
+    return 0;
+  }
+  const userProjectSeasonRecord = await getUserProjectSeasonRecord({
     projectId,
     userId: user.id,
+    seasonNumber: activeQfRound.seasonNumber,
   });
-  const activeQfRound = await findActiveQfRound();
-  const qfTotalDonationAmount = userRecord.qfTotalDonationAmount;
-  if (!activeQfRound?.tokenPrice) {
-    throw new Error('active qf round does not have token price!');
-  }
-  if (!activeQfRound?.roundUSDCapPerUserPerProjectWithGitcoinScoreOnly) {
+  const qfTotalDonationAmount =
+    userProjectSeasonRecord?.qfTotalDonationAmount || 0;
+  if (!activeQfRound?.roundPOLCapPerUserPerProjectWithGitcoinScoreOnly) {
     throw new Error(
-      'active qf round does not have round USDCapPerUserPerProjectWithGitcoinScoreOnly!',
+      'active qf round does not have round POLCapPerUserPerProjectWithGitcoinScoreOnly!',
     );
   }
   return (
-    activeQfRound.roundUSDCapPerUserPerProjectWithGitcoinScoreOnly /
-      activeQfRound.tokenPrice -
+    activeQfRound.roundPOLCapPerUserPerProjectWithGitcoinScoreOnly -
     qfTotalDonationAmount
   );
 };

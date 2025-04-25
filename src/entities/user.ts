@@ -55,6 +55,12 @@ export type UserStreamBalanceWarning =
   | NOTIFICATIONS_EVENT_NAMES.SUPER_TOKENS_BALANCE_WEEK
   | NOTIFICATIONS_EVENT_NAMES.SUPER_TOKENS_BALANCE_DEPLETED;
 
+export enum UserOrderField {
+  QaccPoints = 'qaccPoints',
+  ProjectsFundedCount = 'projectsFundedCount',
+  Rank = 'rank',
+}
+
 @ObjectType()
 @Entity()
 export class User extends BaseEntity {
@@ -227,6 +233,22 @@ export class User extends BaseEntity {
   @Field(_type => Date, { nullable: true })
   @Column({ default: null, nullable: true })
   acceptedToSDate: Date;
+
+  @Field(_type => Float, { nullable: true })
+  @Column({ type: 'real', default: 0 })
+  qaccPoints: number;
+
+  @Field(_type => Float, { nullable: true })
+  @Column({ type: 'real', default: 1 })
+  qaccPointsMultiplier: number;
+
+  @Field(_type => Float, { nullable: true })
+  @Column({ type: 'real', default: 0 })
+  rank: number;
+
+  @Field(_type => Float, { nullable: true })
+  @Column({ type: 'real', default: 0 })
+  projectsFundedCount: number;
 
   @Column('integer', { array: true, default: [] })
   privadoVerifiedRequestIds: number[];
