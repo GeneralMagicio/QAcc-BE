@@ -15,6 +15,7 @@ import {
   GITCOIN_PASSPORT_MIN_VALID_SCORER_SCORE,
 } from '../constants/gitcoin';
 import { Donation, DONATION_STATUS } from '../entities/donation';
+import { logger } from '../utils/logger';
 // import { Project } from '../entities/project';
 
 const getEaProjectRoundRecord = async ({
@@ -247,9 +248,14 @@ const getUserRemainedCapBasedOnGitcoinScore = async ({
     user.passportScoreUpdateTimestamp.getTime() <
       Date.now() - GITCOIN_PASSPORT_EXPIRATION_PERIOD_MS
   ) {
-    await updateUserGitcoinScores(user);
+    try {
+      await updateUserGitcoinScores(user);
+    } catch (error) {
+      logger.error('updateUserGitcoinScores() error', error);
+    }
   }
   if (
+    !user.skipVerification &&
     !user.hasEnoughGitcoinAnalysisScore &&
     !user.hasEnoughGitcoinPassportScore
   ) {
