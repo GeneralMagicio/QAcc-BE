@@ -2270,3 +2270,21 @@ export const setSkipVerificationMutation = `
     setSkipVerification(skipVerification: $skipVerification)
   }
 `;
+
+export const getDonationsByQfRoundId = `
+query donationsByQfRoundId($qfRoundId: Int!) {
+  donationsByQfRoundId(qfRoundId: $qfRoundId) {
+    donations {
+      amount
+      createdAt
+      project {
+        id
+      }
+      user {
+        id
+      }
+    }
+    totalCount
+  }
+}
+`;
