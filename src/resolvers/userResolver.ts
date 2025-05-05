@@ -10,7 +10,7 @@ import {
   registerEnumType,
   Resolver,
 } from 'type-graphql';
-import { Brackets, MoreThan, Repository } from 'typeorm';
+import { Brackets, MoreThanOrEqual, Repository } from 'typeorm';
 
 import moment from 'moment';
 import { User, UserOrderField } from '../entities/user';
@@ -319,7 +319,7 @@ export class UserResolver {
     @Arg('walletAddress', _type => String, { nullable: true })
     walletAddress?: string,
   ) {
-    const whereCondition: any = { qaccPoints: MoreThan(0) };
+    const whereCondition: any = { qaccPoints: MoreThanOrEqual(1) };
     if (walletAddress) {
       whereCondition.walletAddress = walletAddress;
     }
