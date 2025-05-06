@@ -38,7 +38,7 @@ export class VestingData extends BaseEntity {
   user: User;
 
   @Field(_type => String, { nullable: true })
-  @Column({ nullable: true, unique: true })
+  @Column({ nullable: true })
   walletAddress?: string;
 
   @Field()

@@ -7,7 +7,7 @@ export class AddVestingTableMigration1746211907434
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TABLE "vesting_data" ("id" SERIAL NOT NULL, "status" text NOT NULL DEFAULT 'pending', "walletAddress" character varying, "paymentToken" character varying NOT NULL, "amount" bigint NOT NULL, "rewardStreamStart" TIMESTAMP, "cliff" double precision, "rewardStreamEnd" TIMESTAMP, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "projectId" integer, "userId" integer, CONSTRAINT "UQ_c3a2fee0a7bc2c327ee29daac85" UNIQUE ("walletAddress"), CONSTRAINT "PK_c8abbf61fa05ae0eec4048b6408" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "vesting_data" ("id" SERIAL NOT NULL, "status" text NOT NULL DEFAULT 'pending', "walletAddress" character varying, "paymentToken" character varying NOT NULL, "amount" bigint NOT NULL, "rewardStreamStart" TIMESTAMP, "cliff" double precision, "rewardStreamEnd" TIMESTAMP, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "projectId" integer, "userId" integer, CONSTRAINT "PK_c8abbf61fa05ae0eec4048b6408" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_2826daca8f0317c5e209df4de5" ON "vesting_data" ("projectId") `,
