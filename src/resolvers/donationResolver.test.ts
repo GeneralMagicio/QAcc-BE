@@ -68,6 +68,7 @@ import {
 import { EarlyAccessRound } from '../entities/earlyAccessRound';
 import { ProjectRoundRecord } from '../entities/projectRoundRecord';
 import { ProjectUserRecord } from '../entities/projectUserRecord';
+import { Season } from '../entities/season';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const moment = require('moment');
@@ -5083,9 +5084,15 @@ function qAccLimitTestCases() {
     }
   });
   it('should create donation in an active early access round', async () => {
+    await Season.delete({});
+    const season = await Season.create({
+      seasonNumber: 1,
+      startDate: moment().subtract(1, 'month').toDate(),
+      endDate: moment().add(1, 'month').toDate(),
+    }).save();
     earlyAccessRound1 = await EarlyAccessRound.create({
       roundNumber: generateEARoundNumber(),
-      seasonNumber: 1,
+      seasonId: season.id,
       startDate: moment().subtract(1, 'days').toDate(),
       endDate: moment().add(3, 'days').toDate(),
       roundPOLCapPerProject: 1000000,

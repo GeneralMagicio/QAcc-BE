@@ -125,6 +125,7 @@ import {
 } from '../repositories/projectRoundRecordRepository';
 import { QfRound } from '../entities/qfRound';
 import { EarlyAccessRound } from '../entities/earlyAccessRound';
+import { findActiveSeasonByDate } from '../repositories/seasonRepository';
 
 const projectUpdatsCacheDuration = 1000 * 60 * 60;
 
@@ -1380,6 +1381,12 @@ export class ProjectResolver {
     }
     const slug = await getAppropriateSlug(slugBase);
 
+    // Get active season
+    const activeSeason = await findActiveSeasonByDate();
+    if (!activeSeason) {
+      throw new Error(i18n.__(translationErrorMessagesKeys.NO_ACTIVE_SEASON));
+    }
+
     // if we don't get isDraft, we set the status to active
     const status = await this.projectStatusRepository.findOne({
       where: {
@@ -1438,6 +1445,9 @@ export class ProjectResolver {
       // make project listed by default
       listed: true,
       reviewStatus: ReviewStatus.Listed,
+      // Assign active season
+      season: activeSeason,
+      seasonId: activeSeason.id,
     });
 
     await project.save();

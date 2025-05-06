@@ -36,6 +36,7 @@ import {
 } from '../constants/gitcoin';
 import { PrivadoAdapter } from '../adapters/privado/privadoAdapter';
 import { AppDataSource } from '../orm';
+import { Season } from '../entities/season';
 
 describe(
   'projectUserTotalDonationAmount() test cases',
@@ -148,8 +149,14 @@ function projectUserDonationCapTestCases() {
   let accessToken;
   let earlyAccessRounds: EarlyAccessRound[] = [];
   let qfRound1: QfRound;
+  let season: Season;
 
   beforeEach(async () => {
+    season = await Season.create({
+      seasonNumber: 1,
+      startDate: moment().subtract(1, 'month').toDate(),
+      endDate: moment().add(1, 'month').toDate(),
+    }).save();
     project = await saveProjectDirectlyToDb(createProjectData());
 
     user = await saveUserDirectlyToDb(generateRandomEtheriumAddress());
@@ -158,7 +165,7 @@ function projectUserDonationCapTestCases() {
     earlyAccessRounds = await EarlyAccessRound.save([
       EarlyAccessRound.create({
         roundNumber: generateEARoundNumber(),
-        seasonNumber: 1,
+        seasonId: season.id,
         startDate: new Date('2000-01-01'),
         endDate: new Date('2000-01-03'),
         roundPOLCapPerProject: 10000,
@@ -166,7 +173,7 @@ function projectUserDonationCapTestCases() {
       }),
       EarlyAccessRound.create({
         roundNumber: generateEARoundNumber(),
-        seasonNumber: 1,
+        seasonId: season.id,
         startDate: new Date('2000-01-04'),
         endDate: new Date('2000-01-06'),
         roundPOLCapPerProject: 10000,
@@ -174,7 +181,7 @@ function projectUserDonationCapTestCases() {
       }),
       EarlyAccessRound.create({
         roundNumber: generateEARoundNumber(),
-        seasonNumber: 1,
+        seasonId: season.id,
         startDate: new Date('2000-01-07'),
         endDate: new Date('2000-01-09'),
         roundPOLCapPerProject: 10000,
@@ -182,7 +189,7 @@ function projectUserDonationCapTestCases() {
       }),
       EarlyAccessRound.create({
         roundNumber: generateEARoundNumber(),
-        seasonNumber: 1,
+        seasonId: season.id,
         startDate: new Date('2000-01-10'),
         endDate: new Date('2000-01-12'),
         roundPOLCapPerProject: 20000,
@@ -192,7 +199,7 @@ function projectUserDonationCapTestCases() {
 
     qfRound1 = await QfRound.create({
       roundNumber: 1,
-      seasonNumber: 1,
+      seasonId: season.id,
       isActive: true,
       name: new Date().toString() + ' - 1',
       allocatedFund: 100,

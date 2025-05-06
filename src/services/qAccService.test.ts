@@ -20,19 +20,22 @@ import {
   getProjectRoundRecord,
   updateOrCreateProjectRoundRecord,
 } from '../repositories/projectRoundRecordRepository';
+import { Season } from '../entities/season';
 
 describe('qAccService', () => {
   before(async () => {
     await ProjectRoundRecord.delete({});
     await Donation.delete({ earlyAccessRoundId: Not(IsNull()) });
     await EarlyAccessRound.delete({});
+    await Season.delete({});
   });
 
   let project;
   let user;
   let earlyAccessRounds: EarlyAccessRound[] = [];
   let qfRounds: QfRound[] = [];
-
+  let season: Season;
+  let season2: Season;
   async function insertDonation(
     overrides: Partial<
       Pick<Donation, 'amount' | 'earlyAccessRoundId' | 'qfRoundId' | 'status'>
@@ -55,11 +58,23 @@ describe('qAccService', () => {
 
     user = await saveUserDirectlyToDb(generateRandomEtheriumAddress());
 
+    season = await Season.create({
+      seasonNumber: 1,
+      startDate: moment().subtract(1, 'month').toDate(),
+      endDate: moment().add(1, 'month').toDate(),
+    }).save();
+
+    season2 = await Season.create({
+      seasonNumber: 2,
+      startDate: moment().subtract(1, 'month').toDate(),
+      endDate: moment().add(1, 'month').toDate(),
+    }).save();
+
     earlyAccessRounds = await EarlyAccessRound.save(
       EarlyAccessRound.create([
         {
           roundNumber: generateEARoundNumber(),
-          seasonNumber: 1,
+          seasonId: season.id,
           startDate: new Date('2000-01-01'),
           endDate: new Date('2000-01-03'),
           roundPOLCapPerProject: 1_000,
@@ -67,7 +82,7 @@ describe('qAccService', () => {
         },
         {
           roundNumber: generateEARoundNumber(),
-          seasonNumber: 1,
+          seasonId: season.id,
           startDate: new Date('2000-01-04'),
           endDate: new Date('2000-01-06'),
           roundPOLCapPerProject: 1_000,
@@ -75,7 +90,7 @@ describe('qAccService', () => {
         },
         {
           roundNumber: generateEARoundNumber(),
-          seasonNumber: 1,
+          seasonId: season.id,
           startDate: new Date('2000-01-07'),
           endDate: new Date('2000-01-09'),
           roundPOLCapPerProject: 1_000,
@@ -83,7 +98,7 @@ describe('qAccService', () => {
         },
         {
           roundNumber: generateEARoundNumber(),
-          seasonNumber: 1,
+          seasonId: season.id,
           startDate: new Date('2000-01-10'),
           endDate: new Date('2000-01-12'),
           roundPOLCapPerProject: 2_000,
@@ -96,7 +111,7 @@ describe('qAccService', () => {
       QfRound.create([
         {
           roundNumber: 1,
-          seasonNumber: 1,
+          seasonId: season.id,
           isActive: true,
           name: new Date().toString() + ' - 1',
           allocatedFund: 100,
@@ -110,7 +125,7 @@ describe('qAccService', () => {
         },
         {
           roundNumber: 2,
-          seasonNumber: 1,
+          seasonId: season.id,
           isActive: true,
           name: new Date().toString() + ' - 2',
           allocatedFund: 100,
@@ -533,7 +548,7 @@ describe('qAccService', () => {
 
     const newQfRound = await QfRound.create({
       roundNumber: 4,
-      seasonNumber: 2,
+      seasonId: season2.id,
       isActive: true,
       name: new Date().toString() + ' - 4',
       allocatedFund: 100,
@@ -624,7 +639,7 @@ describe('qAccService', () => {
 
     const newQfRound = await QfRound.create({
       roundNumber: 3,
-      seasonNumber: 2,
+      seasonId: season2.id,
       isActive: true,
       name: new Date().toString() + ' - 3',
       allocatedFund: 100,
@@ -669,7 +684,7 @@ describe('qAccService', () => {
 
     const newQfRound = await QfRound.create({
       roundNumber: 4,
-      seasonNumber: 2,
+      seasonId: season2.id,
       isActive: true,
       name: new Date().toString() + ' - 4',
       allocatedFund: 100,
@@ -787,7 +802,7 @@ describe('qAccService', () => {
 
     const newQfRound = await QfRound.create({
       roundNumber: 4,
-      seasonNumber: 2,
+      seasonId: season2.id,
       isActive: true,
       name: new Date().toString() + ' - 4',
       allocatedFund: 100,

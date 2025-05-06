@@ -73,17 +73,17 @@ const getQfProjectRoundRecord = async ({
 const getUserProjectSeasonRecord = async ({
   projectId,
   userId,
-  seasonNumber,
+  seasonId,
 }: {
   projectId: number;
   userId: number;
-  seasonNumber?: number;
+  seasonId?: number;
 }): Promise<ProjectUserRecord | null> => {
   const findCondition: FindOneOptions<ProjectUserRecord> = {
     where: {
       projectId,
       userId,
-      seasonNumber,
+      seasonId,
     },
     select: [
       'id',
@@ -96,7 +96,11 @@ const getUserProjectSeasonRecord = async ({
   let projectUserRecord = await ProjectUserRecord.findOne(findCondition);
 
   if (!projectUserRecord) {
-    await updateOrCreateProjectUserRecord({ projectId, userId, seasonNumber });
+    await updateOrCreateProjectUserRecord({
+      projectId,
+      userId,
+      seasonId,
+    });
     projectUserRecord = await ProjectUserRecord.findOne(findCondition);
   }
 
@@ -176,7 +180,7 @@ const getQAccDonationCap = async ({
     const userRecord = await getUserProjectSeasonRecord({
       projectId,
       userId,
-      seasonNumber: activeRound.seasonNumber,
+      seasonId: activeRound.seasonId,
     });
 
     return Math.max(
@@ -199,7 +203,7 @@ const getQAccDonationCap = async ({
     const userRecord = await getUserProjectSeasonRecord({
       projectId,
       userId,
-      seasonNumber: activeRound.seasonNumber,
+      seasonId: activeRound.seasonId,
     });
 
     const projectCloseCap = activeQfRound?.roundPOLCloseCapPerProject || 0;
@@ -271,7 +275,7 @@ const getUserRemainedCapBasedOnGitcoinScore = async ({
   const userProjectSeasonRecord = await getUserProjectSeasonRecord({
     projectId,
     userId: user.id,
-    seasonNumber: activeQfRound.seasonNumber,
+    seasonId: activeQfRound.seasonId,
   });
   const qfTotalDonationAmount =
     userProjectSeasonRecord?.qfTotalDonationAmount || 0;

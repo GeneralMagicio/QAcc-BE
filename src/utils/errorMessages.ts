@@ -185,6 +185,7 @@ export const errorMessages = {
   ROUND_NOT_FOUND: 'Round not found',
   ROUND_HAS_NOT_STARTED: 'ROUND_HAS_NOT_STARTED',
   NO_ROUND_SPECIFIED: 'NO_ROUND_SPECIFIED',
+  NO_ACTIVE_SEASON: 'No active season',
 };
 
 export const translationErrorMessagesKeys = {
@@ -343,4 +344,5 @@ export const translationErrorMessagesKeys = {
   ROUND_NOT_FOUND: 'ROUND_NOT_FOUND',
   ROUND_HAS_NOT_STARTED: 'ROUND_HAS_NOT_STARTED',
   NO_ROUND_SPECIFIED: 'NO_ROUND_SPECIFIED',
+  NO_ACTIVE_SEASON: 'NO_ACTIVE_SEASON',
 };

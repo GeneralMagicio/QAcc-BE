@@ -24,6 +24,7 @@ import { getProjectQfRoundStats } from './donationRepository';
 import { Donation } from '../entities/donation';
 import { AppDataSource } from '../orm';
 import { QfRoundHistory } from '../entities/qfRoundHistory';
+import { Season } from '../entities/season';
 
 describe(
   'getProjectDonationsSqrtRootSum test cases',
@@ -462,6 +463,7 @@ function findQfRoundBySlugTestCases() {
       roundPOLCapPerProject: 500000,
       roundPOLCapPerUserPerProject: 25000,
     });
+
     await qfRound.save();
 
     const result = await findQfRoundBySlug(qfRound.slug);
@@ -500,6 +502,7 @@ function findQfRoundBySlugTestCases() {
 }
 
 function findQfRoundCumulativeCapsTestCases() {
+  let season: Season;
   beforeEach(async () => {
     // Clean up data before each test case
     await Donation.createQueryBuilder()
@@ -513,6 +516,12 @@ function findQfRoundCumulativeCapsTestCases() {
       .execute();
     await QfRoundHistory.delete({});
     await QfRound.delete({});
+    await Season.delete({});
+    season = await Season.create({
+      seasonNumber: 1,
+      startDate: moment().subtract(1, 'month').toDate(),
+      endDate: moment().add(1, 'month').toDate(),
+    }).save();
   });
 
   after(async () => {
@@ -528,6 +537,7 @@ function findQfRoundCumulativeCapsTestCases() {
       .execute();
     await QfRoundHistory.delete({});
     await QfRound.delete({});
+    await Season.delete({});
   });
 
   it('should return the cap itself as the cumulative cap for the first round', async () => {
@@ -555,7 +565,7 @@ function findQfRoundCumulativeCapsTestCases() {
     // Save multiple rounds
     await QfRound.create({
       roundNumber: 1,
-      seasonNumber: 1,
+      seasonId: season.id,
       name: 'Test Round 1',
       allocatedFund: 1000000,
       minimumPassportScore: 8,
@@ -568,7 +578,7 @@ function findQfRoundCumulativeCapsTestCases() {
 
     await QfRound.create({
       roundNumber: 2,
-      seasonNumber: 1,
+      seasonId: season.id,
       name: 'Test Round 2',
       allocatedFund: 2000000,
       minimumPassportScore: 8,
@@ -581,7 +591,7 @@ function findQfRoundCumulativeCapsTestCases() {
 
     const latestRound = await QfRound.create({
       roundNumber: 3,
-      seasonNumber: 1,
+      seasonId: season.id,
       name: 'Test Round 3',
       allocatedFund: 1500000,
       minimumPassportScore: 8,
@@ -607,7 +617,7 @@ function findQfRoundCumulativeCapsTestCases() {
     // Save multiple rounds where one round is missing caps
     const firstRound = await QfRound.create({
       roundNumber: 1,
-      seasonNumber: 1,
+      seasonId: season.id,
       name: 'Test Round 1',
       allocatedFund: 1000000,
       minimumPassportScore: 8,
@@ -620,7 +630,7 @@ function findQfRoundCumulativeCapsTestCases() {
 
     await QfRound.create({
       roundNumber: 2,
-      seasonNumber: 1,
+      seasonId: season.id,
       name: 'Test Round 2',
       allocatedFund: 2000000,
       minimumPassportScore: 8,
@@ -632,7 +642,7 @@ function findQfRoundCumulativeCapsTestCases() {
 
     const latestRound = await QfRound.create({
       roundNumber: 3,
-      seasonNumber: 1,
+      seasonId: season.id,
       name: 'Test Round 3',
       allocatedFund: 1500000,
       minimumPassportScore: 8,

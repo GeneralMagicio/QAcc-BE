@@ -1005,9 +1005,9 @@ export class DonationResolver {
         updateOrCreateProjectUserRecord({
           projectId: donation.projectId,
           userId: donation.userId,
-          seasonNumber:
-            donation.qfRound?.seasonNumber ||
-            donation.earlyAccessRound?.seasonNumber,
+          seasonId:
+            donation.qfRound?.seasonId ||
+            donation.earlyAccessRound?.seasonId,
         }),
         markDraftDonationStatusMatched({
           matchedDonationId: donation.id,
