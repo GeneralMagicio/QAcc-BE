@@ -2288,3 +2288,29 @@ query donationsByQfRoundId($qfRoundId: Int!) {
   }
 }
 `;
+
+export const getTokenPriceHistoryQuery = `
+  query GetTokenPriceHistory($tokenAddress: String!, $startTime: DateTime, $endTime: DateTime) {
+    getTokenPriceHistory(tokenAddress: $tokenAddress, startTime: $startTime, endTime: $endTime) {
+      token
+      tokenAddress
+      price
+      priceUSD
+      marketCap
+      timestamp
+    }
+  }
+`;
+
+export const getTokenMarketCapChanges24hQuery = `
+  query GetTokenMarketCapChanges24h($tokenAddress: String!) {
+    getTokenMarketCapChanges24h(tokenAddress: $tokenAddress) {
+      token
+      tokenAddress
+      price
+      priceUSD
+      marketCap
+      timestamp
+    }
+  }
+`;
