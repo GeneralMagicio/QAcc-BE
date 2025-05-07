@@ -2264,3 +2264,53 @@ export const getUsersByQaccPoints = `query ( $take: Int,$skip:Int,$orderBy:SortU
     
   }
 }`;
+
+export const setSkipVerificationMutation = `
+  mutation ($skipVerification: Boolean!) {
+    setSkipVerification(skipVerification: $skipVerification)
+  }
+`;
+
+export const getDonationsByQfRoundId = `
+query donationsByQfRoundId($qfRoundId: Int!) {
+  donationsByQfRoundId(qfRoundId: $qfRoundId) {
+    donations {
+      amount
+      createdAt
+      project {
+        id
+      }
+      user {
+        id
+      }
+    }
+    totalCount
+  }
+}
+`;
+
+export const getTokenPriceHistoryQuery = `
+  query GetTokenPriceHistory($tokenAddress: String!, $startTime: DateTime, $endTime: DateTime) {
+    getTokenPriceHistory(tokenAddress: $tokenAddress, startTime: $startTime, endTime: $endTime) {
+      token
+      tokenAddress
+      price
+      priceUSD
+      marketCap
+      timestamp
+    }
+  }
+`;
+
+export const getTokenMarketCapChanges24hQuery = `
+  query GetTokenMarketCapChanges24h($tokenAddress: String!) {
+    getTokenMarketCapChanges24h(tokenAddress: $tokenAddress) {
+      token
+      tokenAddress
+      price
+      priceUSD
+      marketCap
+      timestamp
+    }
+  }
+`;

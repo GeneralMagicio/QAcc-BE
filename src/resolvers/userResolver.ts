@@ -10,7 +10,7 @@ import {
   registerEnumType,
   Resolver,
 } from 'type-graphql';
-import { Brackets, MoreThan, Repository } from 'typeorm';
+import { Brackets, MoreThanOrEqual, Repository } from 'typeorm';
 
 import moment from 'moment';
 import { User, UserOrderField } from '../entities/user';
@@ -319,7 +319,7 @@ export class UserResolver {
     @Arg('walletAddress', _type => String, { nullable: true })
     walletAddress?: string,
   ) {
-    const whereCondition: any = { qaccPoints: MoreThan(0) };
+    const whereCondition: any = { qaccPoints: MoreThanOrEqual(1) };
     if (walletAddress) {
       whereCondition.walletAddress = walletAddress;
     }
@@ -598,5 +598,25 @@ export class UserResolver {
       return true;
     }
     return false;
+  }
+
+  @Mutation(_returns => Boolean)
+  async setSkipVerification(
+    @Arg('skipVerification', _type => Boolean) skipVerification: boolean,
+    @Ctx() { req: { user } }: ApolloContext,
+  ): Promise<boolean> {
+    if (!user)
+      throw new Error(
+        i18n.__(translationErrorMessagesKeys.AUTHENTICATION_REQUIRED),
+      );
+
+    const userFromDB = await findUserById(user.userId);
+    if (!userFromDB) {
+      throw new Error(i18n.__(translationErrorMessagesKeys.USER_NOT_FOUND));
+    }
+
+    userFromDB.skipVerification = skipVerification;
+    await userFromDB.save();
+    return true;
   }
 }

@@ -17,6 +17,7 @@ import { OnboardingFormResolver } from './onboardingFormResolver';
 import { RoundsResolver } from './roundsResolver';
 import { QAccResolver } from './qAccResolver';
 import { QaccPointsHistoryResolver } from './qaccPointsHistoryResolver';
+import { TokenPriceResolver } from './tokenPriceResolver';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export const getResolvers = (): Function[] => {
@@ -44,5 +45,6 @@ export const getResolvers = (): Function[] => {
 
     QAccResolver,
     QaccPointsHistoryResolver,
+    TokenPriceResolver,
   ];
 };
