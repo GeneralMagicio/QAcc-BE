@@ -26,7 +26,7 @@ export const runUpdateGitcoinScoresJob = () => {
           skipVerification: true,
         })
         .andWhere(
-          '(user.analysisScore < :minAnalysisScore OR user.passportScore < :minPassportScore)',
+          '(user.analysisScore IS NULL OR user.passportScore IS NULL OR user.analysisScore < :minAnalysisScore OR user.passportScore < :minPassportScore)',
           {
             minAnalysisScore: GITCOIN_PASSPORT_MIN_VALID_ANALYSIS_SCORE,
             minPassportScore: GITCOIN_PASSPORT_MIN_VALID_SCORER_SCORE,
