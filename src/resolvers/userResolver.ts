@@ -43,6 +43,7 @@ import {
   GITCOIN_PASSPORT_MIN_VALID_SCORER_SCORE,
 } from '../constants/gitcoin';
 import { UserRankMaterializedView } from '../entities/userRanksMaterialized';
+import { DONATION_STATUS } from '../entities/donation';
 
 @ObjectType()
 class UserRelatedAddressResponse {
@@ -121,6 +122,15 @@ class BatchMintingEligibleUserV2Response {
 
 @ObjectType()
 class PaginatedUsers {
+  @Field(_type => [User], { nullable: true })
+  users: User[];
+
+  @Field(_type => Number, { nullable: true })
+  totalCount: number;
+}
+
+@ObjectType()
+class UsersData {
   @Field(_type => [User], { nullable: true })
   users: User[];
 
@@ -618,5 +628,62 @@ export class UserResolver {
     userFromDB.skipVerification = skipVerification;
     await userFromDB.save();
     return true;
+  }
+
+  @Query(_returns => UsersData)
+  async getUsersVerificationStatus(
+    @Arg('hasDonated', () => Boolean, { nullable: true }) hasDonated?: boolean,
+    @Arg('privadoVerified', () => Boolean, { nullable: true })
+    privadoVerified?: boolean,
+    @Arg('humanVerified', () => Boolean, { nullable: true })
+    humanVerified?: boolean,
+  ) {
+    const query = User.createQueryBuilder('user').select([
+      'user.id',
+      'user.walletAddress',
+      'user.passportScore',
+      'user.passportStamps',
+      'user.privadoVerifiedRequestIds',
+      'user.skipVerification',
+    ]);
+
+    if (privadoVerified === true) {
+      // Add the filter for users who are privado verified
+      query.andWhere(
+        ':privadoRequestId = ANY (user.privadoVerifiedRequestIds)',
+        {
+          privadoRequestId: PrivadoAdapter.privadoRequestId,
+        },
+      );
+    }
+
+    if (humanVerified === true) {
+      query.andWhere(
+        new Brackets(qb => {
+          qb.where('user.passportScore >= :passportScoreThreshold', {
+            passportScoreThreshold: GITCOIN_PASSPORT_MIN_VALID_SCORER_SCORE,
+          }).orWhere('user.analysisScore >= :analysisScoreThreshold', {
+            analysisScoreThreshold: GITCOIN_PASSPORT_MIN_VALID_ANALYSIS_SCORE,
+          });
+        }),
+      );
+    }
+
+    if (hasDonated) {
+      query.andWhere(
+        `EXISTS (
+            SELECT 1 FROM donation d
+            WHERE d."userId" = user.id AND d.status = :status
+          )`,
+        { status: DONATION_STATUS.VERIFIED },
+      );
+    }
+
+    const [users, totalCount] = await query.getManyAndCount();
+
+    return {
+      users: users,
+      totalCount: totalCount,
+    };
   }
 }

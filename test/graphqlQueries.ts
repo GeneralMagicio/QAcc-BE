@@ -2288,3 +2288,27 @@ query donationsByQfRoundId($qfRoundId: Int!) {
   }
 }
 `;
+
+export const getUsersVerificationStatus = `
+query GetUsersVerificationStatus(
+  $hasDonated: Boolean
+  $privadoVerified: Boolean
+  $humanVerified: Boolean
+) {
+  getUsersVerificationStatus(
+    hasDonated: $hasDonated
+    privadoVerified: $privadoVerified
+    humanVerified:$humanVerified
+  ) {
+    users {
+      walletAddress
+      id
+      privadoVerified
+      hasEnoughGitcoinAnalysisScore
+      hasEnoughGitcoinPassportScore
+      skipVerification
+    }
+    totalCount
+  }
+}
+`;
