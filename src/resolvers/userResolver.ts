@@ -646,6 +646,15 @@ export class UserResolver {
       'user.privadoVerifiedRequestIds',
       'user.skipVerification',
     ]);
+    if (hasDonated) {
+      query.andWhere(
+        `EXISTS (
+            SELECT 1 FROM donation d
+            WHERE d."userId" = user.id AND d.status = :status
+          )`,
+        { status: DONATION_STATUS.VERIFIED },
+      );
+    }
 
     if (privadoVerified === true) {
       // Add the filter for users who are privado verified
@@ -658,25 +667,20 @@ export class UserResolver {
     }
 
     if (humanVerified === true) {
-      query.andWhere(
-        new Brackets(qb => {
-          qb.where('user.passportScore >= :passportScoreThreshold', {
-            passportScoreThreshold: GITCOIN_PASSPORT_MIN_VALID_SCORER_SCORE,
-          }).orWhere('user.analysisScore >= :analysisScoreThreshold', {
-            analysisScoreThreshold: GITCOIN_PASSPORT_MIN_VALID_ANALYSIS_SCORE,
-          });
-        }),
-      );
-    }
-
-    if (hasDonated) {
-      query.andWhere(
-        `EXISTS (
-            SELECT 1 FROM donation d
-            WHERE d."userId" = user.id AND d.status = :status
-          )`,
-        { status: DONATION_STATUS.VERIFIED },
-      );
+      query
+        .andWhere(
+          new Brackets(qb => {
+            qb.where('user.passportScore >= :passportScoreThreshold', {
+              passportScoreThreshold: GITCOIN_PASSPORT_MIN_VALID_SCORER_SCORE,
+            }).orWhere('user.analysisScore >= :analysisScoreThreshold', {
+              analysisScoreThreshold: GITCOIN_PASSPORT_MIN_VALID_ANALYSIS_SCORE,
+            });
+          }),
+        )
+        .andWhere(
+          'NOT (:privadoRequestId = ANY (user.privadoVerifiedRequestIds))',
+          { privadoRequestId: PrivadoAdapter.privadoRequestId },
+        ); // Negate the condition for privadoVerified
     }
 
     const [users, totalCount] = await query.getManyAndCount();
