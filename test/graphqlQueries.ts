@@ -2336,4 +2336,4 @@ query GetUsersVerificationStatus(
     }
     totalCount
   }
-}
+}`;
