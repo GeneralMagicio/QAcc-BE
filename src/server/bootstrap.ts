@@ -68,6 +68,7 @@ import { runSyncDataWithInverter } from '../services/cronJobs/syncDataWithInvert
 import { runSyncWithAnkrTransfers } from '../services/cronJobs/syncWithAnkrTransfers';
 import { runCheckPendingSwapsCronJob } from '../services/cronJobs/syncSwapTransactions';
 import { startTokenPriceCron } from '../services/cronJobs/tokenPriceCron';
+import { runUpdateGitcoinScoresJob } from '../services/cronJobs/updateGitcoinScoresJob';
 
 Resource.validate = validate;
 
@@ -166,6 +167,8 @@ export async function bootstrap() {
     // runUpdateUserRanksCronJob();
 
     startTokenPriceCron();
+
+    runUpdateGitcoinScoresJob();
 
     if (process.env.ENABLE_IMPORT_LOST_DONATIONS === 'true') {
       runSyncLostDonations();
