@@ -2272,19 +2272,38 @@ export const setSkipVerificationMutation = `
 `;
 
 export const getDonationsByQfRoundId = `
-query donationsByQfRoundId($qfRoundId: Int!) {
-  donationsByQfRoundId(qfRoundId: $qfRoundId) {
+query donationsByQfRoundId(
+  $qfRoundId: Int!
+  $isSwap: Boolean
+) {
+  donationsByQfRoundId(qfRoundId: $qfRoundId, isSwap: $isSwap) {
     donations {
-      amount
+      transactionId
+      fromTokenAmount
+      toTokenAmount:amount
       createdAt
       project {
         id
       }
+      isSwap
+      swapTransaction {
+        id
+        firstTxHash
+        secondTxHash
+        fromChainId
+        toChainId
+        fromTokenAddress
+        toTokenAddress
+        fromTokenSymbol
+        toTokenSymbol
+      }
       user {
         id
+        walletAddress
       }
     }
     totalCount
   }
 }
+
 `;

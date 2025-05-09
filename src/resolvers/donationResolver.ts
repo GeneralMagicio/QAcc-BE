@@ -1144,14 +1144,35 @@ export class DonationResolver {
   async donationsByQfRoundId(
     @Ctx() _ctx: ApolloContext,
     @Arg('qfRoundId', _type => Int) qfRoundId: number,
+    @Arg('isSwap', () => Boolean, { nullable: true }) isSwap?: boolean,
   ) {
     const query = this.donationRepository
       .createQueryBuilder('donation')
       .leftJoin('donation.project', 'project')
       .leftJoin('donation.user', 'user')
-      .addSelect(['project.title', 'project.abc', 'project.id', 'user.id'])
+      .leftJoin('donation.swapTransaction', 'swapTransaction')
+      .addSelect([
+        'project.title',
+        'project.abc',
+        'project.id',
+        'user.id',
+        'user.walletAddress',
+        'swapTransaction.id',
+        'swapTransaction.firstTxHash',
+        'swapTransaction.secondTxHash',
+        'swapTransaction.fromChainId',
+        'swapTransaction.toChainId',
+        'swapTransaction.fromTokenAddress',
+        'swapTransaction.toTokenAddress',
+        'swapTransaction.fromTokenSymbol',
+        'swapTransaction.toTokenSymbol',
+      ])
       .where('donation.qfRoundId = :qfRoundId', { qfRoundId })
       .orderBy('donation.createdAt', 'DESC');
+
+    if (isSwap !== undefined) {
+      query.andWhere('donation.isSwap = :isSwap', { isSwap });
+    }
 
     const [donations, totalCount] = await query.getManyAndCount();
 
