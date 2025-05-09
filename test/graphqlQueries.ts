@@ -2314,3 +2314,26 @@ export const getTokenMarketCapChanges24hQuery = `
     }
   }
 `;
+
+export const getUsersVerificationStatus = `
+query GetUsersVerificationStatus(
+  $hasDonated: Boolean
+  $privadoVerified: Boolean
+  $humanVerified: Boolean
+) {
+  getUsersVerificationStatus(
+    hasDonated: $hasDonated
+    privadoVerified: $privadoVerified
+    humanVerified:$humanVerified
+  ) {
+    users {
+      walletAddress
+      id
+      privadoVerified
+      hasEnoughGitcoinAnalysisScore
+      hasEnoughGitcoinPassportScore
+      skipVerification
+    }
+    totalCount
+  }
+}`;
