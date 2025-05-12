@@ -291,7 +291,10 @@ export class UserResolver {
               {
                 privadoRequestId: PrivadoAdapter.privadoRequestId,
               },
-            );
+            )
+            .orWhere('user.skipVerification = :skipVerification', {
+              skipVerification: true,
+            });
         }),
       );
 
