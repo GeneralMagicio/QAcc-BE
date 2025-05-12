@@ -218,6 +218,15 @@ class DonationMetrics {
   averagePercentageToGiveth: number;
 }
 
+@ObjectType()
+class TotalDonations {
+  @Field(_type => [Donation])
+  donations: Donation[];
+
+  @Field(_type => Int)
+  totalCount: number;
+}
+
 @InputType()
 class SwapTransactionInput {
   @Field({ nullable: true })
@@ -1129,5 +1138,47 @@ export class DonationResolver {
       logger.error('donationMetrics query error', e);
       throw e;
     }
+  }
+
+  @Query(_returns => TotalDonations, { nullable: true })
+  async donationsByQfRoundId(
+    @Ctx() _ctx: ApolloContext,
+    @Arg('qfRoundId', _type => Int) qfRoundId: number,
+    @Arg('isSwap', () => Boolean, { nullable: true }) isSwap?: boolean,
+  ) {
+    const query = this.donationRepository
+      .createQueryBuilder('donation')
+      .leftJoin('donation.project', 'project')
+      .leftJoin('donation.user', 'user')
+      .leftJoin('donation.swapTransaction', 'swapTransaction')
+      .addSelect([
+        'project.title',
+        'project.abc',
+        'project.id',
+        'user.id',
+        'user.walletAddress',
+        'swapTransaction.id',
+        'swapTransaction.firstTxHash',
+        'swapTransaction.secondTxHash',
+        'swapTransaction.fromChainId',
+        'swapTransaction.toChainId',
+        'swapTransaction.fromTokenAddress',
+        'swapTransaction.toTokenAddress',
+        'swapTransaction.fromTokenSymbol',
+        'swapTransaction.toTokenSymbol',
+      ])
+      .where('donation.qfRoundId = :qfRoundId', { qfRoundId })
+      .orderBy('donation.createdAt', 'DESC');
+
+    if (isSwap !== undefined) {
+      query.andWhere('donation.isSwap = :isSwap', { isSwap });
+    }
+
+    const [donations, totalCount] = await query.getManyAndCount();
+
+    return {
+      donations,
+      totalCount: totalCount,
+    };
   }
 }

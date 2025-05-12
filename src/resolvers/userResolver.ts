@@ -10,7 +10,7 @@ import {
   registerEnumType,
   Resolver,
 } from 'type-graphql';
-import { Brackets, MoreThan, Repository } from 'typeorm';
+import { Brackets, MoreThanOrEqual, Repository } from 'typeorm';
 
 import moment from 'moment';
 import { User, UserOrderField } from '../entities/user';
@@ -43,6 +43,7 @@ import {
   GITCOIN_PASSPORT_MIN_VALID_SCORER_SCORE,
 } from '../constants/gitcoin';
 import { UserRankMaterializedView } from '../entities/userRanksMaterialized';
+import { DONATION_STATUS } from '../entities/donation';
 
 @ObjectType()
 class UserRelatedAddressResponse {
@@ -121,6 +122,15 @@ class BatchMintingEligibleUserV2Response {
 
 @ObjectType()
 class PaginatedUsers {
+  @Field(_type => [User], { nullable: true })
+  users: User[];
+
+  @Field(_type => Number, { nullable: true })
+  totalCount: number;
+}
+
+@ObjectType()
+class UsersData {
   @Field(_type => [User], { nullable: true })
   users: User[];
 
@@ -281,7 +291,10 @@ export class UserResolver {
               {
                 privadoRequestId: PrivadoAdapter.privadoRequestId,
               },
-            );
+            )
+            .orWhere('user.skipVerification = :skipVerification', {
+              skipVerification: true,
+            });
         }),
       );
 
@@ -319,7 +332,7 @@ export class UserResolver {
     @Arg('walletAddress', _type => String, { nullable: true })
     walletAddress?: string,
   ) {
-    const whereCondition: any = { qaccPoints: MoreThan(0) };
+    const whereCondition: any = { qaccPoints: MoreThanOrEqual(1) };
     if (walletAddress) {
       whereCondition.walletAddress = walletAddress;
     }
@@ -598,5 +611,86 @@ export class UserResolver {
       return true;
     }
     return false;
+  }
+
+  @Mutation(_returns => Boolean)
+  async setSkipVerification(
+    @Arg('skipVerification', _type => Boolean) skipVerification: boolean,
+    @Ctx() { req: { user } }: ApolloContext,
+  ): Promise<boolean> {
+    if (!user)
+      throw new Error(
+        i18n.__(translationErrorMessagesKeys.AUTHENTICATION_REQUIRED),
+      );
+
+    const userFromDB = await findUserById(user.userId);
+    if (!userFromDB) {
+      throw new Error(i18n.__(translationErrorMessagesKeys.USER_NOT_FOUND));
+    }
+
+    userFromDB.skipVerification = skipVerification;
+    await userFromDB.save();
+    return true;
+  }
+
+  @Query(_returns => UsersData)
+  async getUsersVerificationStatus(
+    @Arg('hasDonated', () => Boolean, { nullable: true }) hasDonated?: boolean,
+    @Arg('privadoVerified', () => Boolean, { nullable: true })
+    privadoVerified?: boolean,
+    @Arg('humanVerified', () => Boolean, { nullable: true })
+    humanVerified?: boolean,
+  ) {
+    const query = User.createQueryBuilder('user').select([
+      'user.id',
+      'user.walletAddress',
+      'user.passportScore',
+      'user.passportStamps',
+      'user.privadoVerifiedRequestIds',
+      'user.skipVerification',
+    ]);
+    if (hasDonated) {
+      query.andWhere(
+        `EXISTS (
+            SELECT 1 FROM donation d
+            WHERE d."userId" = user.id AND d.status = :status
+          )`,
+        { status: DONATION_STATUS.VERIFIED },
+      );
+    }
+
+    if (privadoVerified === true) {
+      // Add the filter for users who are privado verified
+      query.andWhere(
+        ':privadoRequestId = ANY (user.privadoVerifiedRequestIds)',
+        {
+          privadoRequestId: PrivadoAdapter.privadoRequestId,
+        },
+      );
+    }
+
+    if (humanVerified === true) {
+      query
+        .andWhere(
+          new Brackets(qb => {
+            qb.where('user.passportScore >= :passportScoreThreshold', {
+              passportScoreThreshold: GITCOIN_PASSPORT_MIN_VALID_SCORER_SCORE,
+            }).orWhere('user.analysisScore >= :analysisScoreThreshold', {
+              analysisScoreThreshold: GITCOIN_PASSPORT_MIN_VALID_ANALYSIS_SCORE,
+            });
+          }),
+        )
+        .andWhere(
+          'NOT (:privadoRequestId = ANY (user.privadoVerifiedRequestIds))',
+          { privadoRequestId: PrivadoAdapter.privadoRequestId },
+        ); // Negate the condition for privadoVerified
+    }
+
+    const [users, totalCount] = await query.getManyAndCount();
+
+    return {
+      users: users,
+      totalCount: totalCount,
+    };
   }
 }
