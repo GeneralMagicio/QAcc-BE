@@ -1,8 +1,8 @@
 import path from 'path';
 
 export const collectionName = 'reportsForSeason2';
-export const streamStartDateForQacc = 1744847390; // TODO: update this for production
-export const streamEndDateForQacc = 1776383390; // TODO: update this for production
+export const streamStartDateForQacc = 1747008000; // 5/12/2025
+export const streamEndDateForQacc = 1778544000; // 5/12/2026
 // 182 days is sec
 export const streamCliffForQacc = 15724800;
 // 30 days is sec
