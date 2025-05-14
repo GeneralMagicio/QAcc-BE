@@ -344,6 +344,10 @@ async function main() {
     const isLastProject = (process.argv[6] ?? '').toLowerCase() === 'true';
     console.info('Is last project is:', isLastProject);
 
+    const runWithoutDBConnection =
+      (process.argv[7] ?? '').toLowerCase() === 'true';
+    console.info('Run without DB connection is:', runWithoutDBConnection);
+
     // Step 3
     console.info('Start pulling latest version of funding pot service...');
     await pullLatestVersionOfFundingPot();
@@ -355,14 +359,20 @@ async function main() {
     console.info('Dependencies installed.');
 
     // Step 5
-    console.info('Filling input data in to the funding pot service...');
-    const projectName = await fillInputData(
-      seasonNumber,
-      projectId,
-      batchNumber,
-      dryRun,
-    );
-    console.info('Input data filled successfully.');
+    let projectName = '';
+    if (!runWithoutDBConnection) {
+      console.info('Filling input data in to the funding pot service...');
+      projectName = await fillInputData(
+        seasonNumber,
+        projectId,
+        batchNumber,
+        dryRun,
+      );
+      console.info('Input data filled successfully.');
+    } else {
+      console.info('Skipping input data filling...');
+      projectName = (process.argv[8] ?? '').toLowerCase();
+    }
 
     // Step 6
     console.info('Creating .env file for funding pot service...');
