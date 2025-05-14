@@ -371,7 +371,7 @@ async function main() {
       console.info('Input data filled successfully.');
     } else {
       console.info('Skipping input data filling...');
-      projectName = (process.argv[8] ?? '').toLowerCase();
+      projectName = (process.argv[8] ?? '').toUpperCase();
     }
 
     // Step 6
