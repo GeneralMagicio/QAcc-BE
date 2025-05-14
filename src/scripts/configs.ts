@@ -8,7 +8,7 @@ export const streamCliffForQacc = 15724800;
 // 30 days is sec
 export const ONE_MONTH_IN_SEC = 2592000;
 
-export const initialSupplyOfFirstSeasonProjects = 250000; // 250k POL // TODO: update this for production
+export const initialSupplyOfFirstSeasonProjects = 152135; // 152k POL
 
 // The URL of the GitHub repository containing the reports
 export const repoUrl = 'https://github.com/InverterNetwork/funding-pot.git';
