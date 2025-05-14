@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
 import { PostgresConnectionCredentialsOptions } from 'typeorm/driver/postgres/PostgresConnectionCredentialsOptions';
-import config, { isJobMode } from './config';
+import config from './config';
 import { CronJob } from './entities/CronJob';
 import { getEntities } from './entities/entities';
 import { redisConfig } from './redis';
@@ -11,9 +11,8 @@ export class AppDataSource {
   static async initialize(_overrideDrop?: boolean) {
     if (!AppDataSource.datasource) {
       const isTestEnv = (config.get('ENVIRONMENT') as string) === 'test';
-      const dropSchema =
-        _overrideDrop ?? config.get('DROP_DATABASE') === 'true';
-      const synchronize = isTestEnv;
+      const dropSchema = false;
+      const synchronize = false;
       const entities = getEntities();
       const poolSize = Number(process.env.TYPEORM_DATABASE_POOL_SIZE) || 10; // 10 is the default value
       const slaves: PostgresConnectionCredentialsOptions[] = [];
@@ -61,7 +60,7 @@ export class AppDataSource {
               },
             },
         poolSize,
-        migrationsRun: isJobMode,
+        migrationsRun: false,
         extra: {
           maxWaitingClients: 10,
           evictionRunIntervalMillis: 500,
