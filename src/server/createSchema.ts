@@ -5,6 +5,7 @@ import { NonEmptyArray } from 'type-graphql';
 import { userCheck } from '../auth/userCheck';
 import { getResolvers } from '../resolvers/resolvers';
 import config from '../config';
+import { DateTimeScalar } from '../scalars/dateTime';
 
 const createSchema = async (): Promise<GraphQLSchema> => {
   // James: removing for safety. We shouldn't need to do this again except on a local dev machine
@@ -25,6 +26,7 @@ const createSchema = async (): Promise<GraphQLSchema> => {
       forbidUnknownValues: false,
       enableDebugMessages: environment !== 'production',
     },
+    scalarsMap: [{ type: Date, scalar: DateTimeScalar }],
   });
   return schema;
 };
