@@ -6,6 +6,7 @@ import {
   streamEndDateForQacc,
   streamStartDateForQacc,
   ONE_MONTH_IN_SEC,
+  TWO_MONTH_IN_SEC,
   initialSupplyOfFirstSeasonProjects,
 } from './configs';
 import { AppDataSource } from '../orm';
@@ -41,7 +42,7 @@ export function getStreamDetails(project: Project, seasonNumber: number) {
       seasonNumber === project.seasonNumber
         ? streamEndDateForQacc
         : streamEndDateForQacc -
-          (seasonNumber - project.seasonNumber!) * 2 * ONE_MONTH_IN_SEC,
+          (seasonNumber - project.seasonNumber!) * TWO_MONTH_IN_SEC,
   };
 }
 

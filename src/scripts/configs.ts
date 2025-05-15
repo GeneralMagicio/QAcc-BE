@@ -1,12 +1,14 @@
 import path from 'path';
 
 export const collectionName = 'reportsForSeason2';
-export const streamStartDateForQacc = 1747008000; // 5/12/2025
-export const streamEndDateForQacc = 1778544000; // 5/12/2026
-// 182 days is sec
-export const streamCliffForQacc = 15724800;
-// 30 days is sec
-export const ONE_MONTH_IN_SEC = 2592000;
+export const streamStartDateForQacc = 1747152000; // 5/13/2025 - 16:00:00 GMT
+export const streamEndDateForQacc = 1778688000; // 5/13/2026 - 16:00:00 GMT
+// 182 days is seconds
+export const streamCliffForQacc = 15897600;
+// 31 days is seconds
+export const ONE_MONTH_IN_SEC = 2678400;
+// 61 days is seconds
+export const TWO_MONTH_IN_SEC = 5270400;
 
 export const initialSupplyOfFirstSeasonProjects = 152135; // 152k POL
 
