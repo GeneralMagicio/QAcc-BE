@@ -164,6 +164,10 @@ export class Abc {
   nftContractAddress: string;
   @Field()
   chainId: number;
+  @Field(_type => String, { nullable: true })
+  paymentProcessorAddress?: string;
+  @Field(_type => String, { nullable: true })
+  paymentRouterAddress?: string;
 }
 
 @Entity()
