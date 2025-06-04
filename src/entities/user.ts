@@ -37,6 +37,9 @@ export const publicSelectionFields = [
   'user.passportScore',
   'user.passportStamps',
   'user.acceptedToS',
+  'user.email',
+  'user.qaccPoints',
+  'user.username',
 ];
 
 export enum UserRole {
@@ -67,6 +70,10 @@ export class User extends BaseEntity {
   @Field(_type => ID)
   @PrimaryGeneratedColumn()
   readonly id: number;
+
+  @Field(_type => String, { nullable: true })
+  @Column({ nullable: true, unique: true })
+  username?: string;
 
   @Column({
     type: 'enum',

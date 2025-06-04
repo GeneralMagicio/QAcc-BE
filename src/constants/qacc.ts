@@ -4,7 +4,7 @@ export const QACC_DONATION_TOKEN_ADDRESS: string = (
   (config.get('QACC_DONATION_TOKEN_ADDRESS') as string) ||
   // POL token is the native token of Polygon
   '0x0000000000000000000000000000000000000000'
-).toLowerCase();
+).toLowerCase(); // it should set to TPOL for test with this address: 0xc20CAf8deE81059ec0c8E5971b2AF7347eC131f4
 export const QACC_DONATION_TOKEN_SYMBOL =
   (config.get('QACC_DONATION_TOKEN_SYMBOL') as string) || 'POL';
 export const QACC_DONATION_TOKEN_NAME =

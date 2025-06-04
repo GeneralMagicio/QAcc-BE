@@ -751,7 +751,7 @@ function donationsTestCases() {
     assert.isOk(donations.find(d => Number(d.id) === oldDonation.id));
     assert.notOk(donations.find(d => Number(d.id) === newDonation.id));
     donations.forEach(donation => {
-      assert.isNotOk(donation.user.email);
+      assert.isOk(donation.user.email);
       assert.isOk(donation.user.firstName);
       assert.isOk(donation.user.walletAddress);
     });
@@ -2927,7 +2927,7 @@ function donationsFromWalletsTestCases() {
     // assert.isNotEmpty(result.data.data.donationsFromWallets);
     result.data.data.donationsFromWallets.forEach(item => {
       assert.equal(item.fromWalletAddress, walletAddress);
-      assert.isNotOk(item.user.email);
+      assert.isOk(item.user.email);
       assert.isOk(item.user.walletAddress);
     });
   });
@@ -2953,7 +2953,7 @@ function donationsFromWalletsTestCases() {
 
     result.data.data.donationsFromWallets.forEach(item => {
       assert.equal(item.fromWalletAddress, walletAddress);
-      assert.isNotOk(item.user.email);
+      assert.isOk(item.user.email);
       assert.isOk(item.user.walletAddress);
     });
   });
@@ -2991,7 +2991,7 @@ function donationsFromWalletsTestCases() {
         item.fromWalletAddress.toLowerCase(),
         walletAddress.toLowerCase(),
       );
-      assert.isNotOk(item.user.email);
+      assert.isOk(item.user.email);
       assert.isOk(item.user.walletAddress);
     });
   });
@@ -3193,7 +3193,7 @@ function donationsByProjectIdTestCases() {
     const donations = result.data.data.donationsByProjectId.donations;
     assert.equal(Number(donations[0].id), DONATION_SEED_DATA.FIFTH_DONATION.id);
     donations.forEach(donation => {
-      assert.isNotOk(donation.user.email);
+      assert.isOk(donation.user.email);
       assert.isOk(donation.user.firstName);
       assert.isOk(donation.user.walletAddress);
     });
@@ -4363,7 +4363,7 @@ function donationsByDonorTestCases() {
       SEED_DATA.FIRST_USER.walletAddress,
     );
     firstUserResult.data.data.donationsByDonor.forEach(donation => {
-      assert.isNotOk(donation.user.email);
+      assert.isOk(donation.user.email);
       assert.isOk(donation.user.firstName);
       assert.isOk(donation.user.walletAddress);
     });
@@ -4416,7 +4416,7 @@ function donationsToWalletsTestCases() {
     // assert.isNotEmpty(result.data.data.donationsToWallets);
     result.data.data.donationsToWallets.forEach(item => {
       assert.equal(item.toWalletAddress, project.walletAddress);
-      assert.isNotOk(item.user.email);
+      assert.isOk(item.user.email);
       assert.isOk(item.user.walletAddress);
     });
   });
