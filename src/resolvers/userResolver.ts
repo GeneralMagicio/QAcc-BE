@@ -171,6 +171,7 @@ export class UserResolver {
     if (!foundUser) {
       throw new Error(i18n.__(translationErrorMessagesKeys.USER_NOT_FOUND));
     }
+
     return {
       isSignedIn: Boolean(user),
       ...foundUser,
