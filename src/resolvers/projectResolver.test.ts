@@ -622,7 +622,7 @@ function projectsByUserIdTestCases() {
       assert.isOk(project.adminUser.walletAddress);
       assert.isOk(project.adminUser.firstName);
       assert.isNull(project.projectVerificationForm);
-      assert.isOk(project.adminUser.email);
+      assert.isNotOk(project.adminUser.email);
     });
   });
 
@@ -641,7 +641,7 @@ function projectsByUserIdTestCases() {
     projects.forEach(project => {
       assert.isOk(project.adminUser.walletAddress);
       assert.isOk(project.adminUser.firstName);
-      assert.isOk(project.adminUser.email);
+      assert.isNotOk(project.adminUser.email);
     });
   });
 }
@@ -660,7 +660,7 @@ function projectByIdTestCases() {
     assert.isNotEmpty(result.data.data.projectById.addresses);
     assert.isOk(result.data.data.projectById.adminUser.walletAddress);
     assert.isOk(result.data.data.projectById.adminUser.firstName);
-    assert.isOk(result.data.data.projectById.adminUser.email);
+    assert.isNotOk(result.data.data.projectById.adminUser.email);
     assert.isOk(result.data.data.projectById.categories[0].mainCategory.title);
   });
   it('should return error for invalid id', async () => {
@@ -690,7 +690,7 @@ function projectByIdTestCases() {
     assert.equal(result.data.data.projectById.id, project.id);
     assert.isOk(result.data.data.projectById.adminUser.walletAddress);
     assert.isOk(result.data.data.projectById.adminUser.firstName);
-    assert.isOk(result.data.data.projectById.adminUser.email);
+    assert.isNotOk(result.data.data.projectById.adminUser.email);
     assert.isNotOk(result.data.data.projectById.reaction);
   });
   it('should not return reaction when user didnt like the project', async () => {
@@ -708,7 +708,7 @@ function projectByIdTestCases() {
     assert.isNotOk(result.data.data.projectById.reaction);
     assert.isOk(result.data.data.projectById.adminUser.walletAddress);
     assert.isOk(result.data.data.projectById.adminUser.firstName);
-    assert.isOk(result.data.data.projectById.adminUser.email);
+    assert.isNotOk(result.data.data.projectById.adminUser.email);
   });
   it('should not return drafted projects if not logged in', async () => {
     const draftedProject = await saveProjectDirectlyToDb({
@@ -760,7 +760,7 @@ function projectByIdTestCases() {
     assert.equal(Number(project.id), draftedProject.id);
     assert.isOk(project.adminUser.walletAddress);
     assert.isOk(project.adminUser.firstName);
-    assert.isOk(project.adminUser.email);
+    assert.isNotOk(project.adminUser.email);
   });
   it('should not return drafted project is user is logged in but is not owner of project', async () => {
     const accessToken = await generateTestAccessToken(SEED_DATA.SECOND_USER.id);
@@ -844,7 +844,7 @@ function projectByIdTestCases() {
     assert.equal(Number(project.id), cancelledProject.id);
     assert.isOk(project.adminUser.walletAddress);
     assert.isOk(project.adminUser.firstName);
-    assert.isOk(project.adminUser.email);
+    assert.isNotOk(project.adminUser.email);
   });
   it('should not return cancelled project is user is logged in but is not owner of project', async () => {
     const accessToken = await generateTestAccessToken(SEED_DATA.SECOND_USER.id);
@@ -959,7 +959,7 @@ function projectBySlugTestCases() {
     assert.equal(Number(project.id), project1.id);
     assert.isOk(project.adminUser.walletAddress);
     assert.isOk(project.adminUser.firstName);
-    assert.isOk(project.adminUser.email);
+    assert.isNotOk(project.adminUser.email);
     assert.isOk(project.categories[0].mainCategory.title);
   });
 
@@ -996,7 +996,7 @@ function projectBySlugTestCases() {
     assert.equal(Number(project.id), Number(_project.id));
     assert.isOk(project.adminUser.walletAddress);
     assert.isOk(project.adminUser.firstName);
-    assert.isOk(project.adminUser.email);
+    assert.isNotOk(project.adminUser.email);
     assert.isNotEmpty(project.addresses);
     assert.equal(project.addresses[0].address, walletAddress);
     assert.equal(project.addresses[0].chainType, ChainType.EVM);

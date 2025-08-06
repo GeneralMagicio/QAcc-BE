@@ -167,7 +167,7 @@ function userByAddressTestCases() {
     assert.equal(result.data.data.userByAddress.firstName, userData.firstName);
     assert.equal(result.data.data.userByAddress.lastName, userData.lastName);
     assert.isNotOk(result.data.data.userByAddress.role);
-    assert.equal(result.data.data.userByAddress.email, userData.email);
+    assert.isNotOk(result.data.data.userByAddress.email);
     assert.equal(result.data.data.userByAddress.url, userData.url);
   });
   it('Get all fields of a user', async () => {
