@@ -189,6 +189,9 @@ export const filterProjectsQuery = (params: FilterProjectQueryInputParams) => {
           .addOrderBy(`project.verified`, OrderDirection.DESC);
       }
       break;
+    case SortingField.Rank:
+      query.orderBy('project.rank', OrderDirection.ASC, 'NULLS LAST');
+      break;
     default:
       query.orderBy('project.creationDate', OrderDirection.DESC);
       break;
