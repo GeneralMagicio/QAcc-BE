@@ -193,6 +193,8 @@
         "test:tokenPriceResolver": "NODE_ENV=test mocha ./test/pre-test-scripts.ts ./src/resolvers/tokenPriceResolver.test.ts",
         "test:vestingScheduleRepository": "NODE_ENV=test mocha ./test/pre-test-scripts.ts ./src/repositories/vestingScheduleRepository.test.ts",
         "test:vestingScheduleResolver": "NODE_ENV=test mocha ./test/pre-test-scripts.ts ./src/resolvers/vestingScheduleResolver.test.ts",
+        "test:tokenHolderRepository": "NODE_ENV=test mocha ./test/pre-test-scripts.ts ./src/repositories/tokenHolderRepository.test.ts",
+        "test:tokenHolderResolver": "NODE_ENV=test mocha ./test/pre-test-scripts.ts ./src/resolvers/tokenHolderResolver.test.ts",
         "start": "NODE_ENV=development ts-node-dev --project ./tsconfig.json --respawn ./src/index.ts",
         "start:test": "NODE_ENV=development ts-node-dev --project ./tsconfig.json --respawn ./test.ts",
         "serve": "pm2 startOrRestart ecosystem.config.js --node-args='--max-old-space-size=8192'",
