@@ -1,14 +1,14 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddYoutubeReelToProjectSocialMediaType1746613421849
+export class AddReelVideoToProjectSocialMediaType1746613421849
   implements MigrationInterface
 {
-  name = 'AddYoutubeReelToProjectSocialMediaType1746613421849';
+  name = 'AddReelVideoToProjectSocialMediaType1746613421849';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    // Add YOUTUBE_REEL to the project_social_media_type_enum
+    // Add REEL_VIDEO to the project_social_media_type_enum
     await queryRunner.query(
-      `ALTER TYPE "public"."project_social_media_type_enum" ADD VALUE 'YOUTUBE_REEL'`,
+      `ALTER TYPE "public"."project_social_media_type_enum" ADD VALUE 'REEL_VIDEO'`,
     );
   }
 

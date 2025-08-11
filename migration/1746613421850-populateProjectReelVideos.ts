@@ -1,13 +1,13 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class PopulateProjectYoutubeReels1746613421850
+export class PopulateProjectReelVideos1746613421850
   implements MigrationInterface
 {
-  name = 'PopulateProjectYoutubeReels1746613421850';
+  name = 'PopulateProjectReelVideos1746613421850';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    // Define the project ticker to YouTube Reel URL mapping
-    const projectYoutubeReels = [
+    // Define the project ticker to Reel Video URL mapping
+    const projectReelVideos = [
       {
         ticker: 'PACK',
         url: 'https://youtube.com/shorts/8Gk-Ly8Foac?feature=share',
@@ -50,8 +50,8 @@ export class PopulateProjectYoutubeReels1746613421850
       },
     ];
 
-    // Insert YouTube Reel social media entries for each project
-    for (const { ticker, url } of projectYoutubeReels) {
+    // Insert Reel Video social media entries for each project
+    for (const { ticker, url } of projectReelVideos) {
       // First, get the project ID and admin user ID for the project with this ticker
       const projectResult = await queryRunner.query(
         `SELECT id, "adminUserId" 
@@ -64,10 +64,10 @@ export class PopulateProjectYoutubeReels1746613421850
         const projectId = projectResult[0].id;
         const adminUserId = projectResult[0].adminUserId;
 
-        // Insert the YouTube Reel social media entry
+        // Insert the Reel Video social media entry
         await queryRunner.query(
           `INSERT INTO "project_social_media" ("type", "link", "projectId", "userId")
-           VALUES ('YOUTUBE_REEL', $1, $2, $3)`,
+           VALUES ('REEL_VIDEO', $1, $2, $3)`,
           [url, projectId, adminUserId],
         );
       }
@@ -89,11 +89,11 @@ export class PopulateProjectYoutubeReels1746613421850
       'MELS',
     ];
 
-    // Remove YouTube Reel social media entries for these projects
+    // Remove Reel Video social media entries for these projects
     for (const ticker of projectTickers) {
       await queryRunner.query(
         `DELETE FROM "project_social_media" 
-         WHERE "type" = 'YOUTUBE_REEL' 
+         WHERE "type" = 'REEL_VIDEO' 
          AND "projectId" IN (
            SELECT id FROM "project" WHERE "abc"->>'tokenTicker' = $1
          )`,
