@@ -37,7 +37,6 @@ export const publicSelectionFields = [
   'user.passportScore',
   'user.passportStamps',
   'user.acceptedToS',
-  'user.email',
   'user.qaccPoints',
   'user.username',
 ];

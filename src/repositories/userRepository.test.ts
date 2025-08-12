@@ -335,7 +335,7 @@ function findUserByWalletAddressTestCases() {
     );
     assert.isOk(foundUser);
     assert.equal(foundUser?.walletAddress, user.walletAddress);
-    assert.isOk(foundUser?.email);
+    assert.isNotOk(foundUser?.email);
   });
 
   it('Should find user by walletAddress with all fields', async () => {
