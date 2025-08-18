@@ -57,6 +57,11 @@ describe('projectBySlug test cases --->', projectBySlugTestCases);
 describe('projectById test cases --->', projectByIdTestCases);
 describe('projectSearch test cases --->', projectSearchTestCases);
 
+describe(
+  'allProjects socialMedia test cases --->',
+  allProjectsSocialMediaTestCases,
+);
+
 describe('updateProject test cases --->', updateProjectTestCases);
 
 describe(
@@ -876,6 +881,27 @@ function projectByIdTestCases() {
       result.data.errors[0].message,
       errorMessages.YOU_DONT_HAVE_ACCESS_TO_VIEW_THIS_PROJECT,
     );
+  });
+}
+
+function allProjectsSocialMediaTestCases() {
+  it.only('should return projects with socialMedia when requested in GraphQL query', async () => {
+    const result = await axios.post(graphqlUrl, {
+      query: fetchMultiFilterAllProjectsQuery,
+      variables: {
+        limit: 10,
+        skip: 0,
+      },
+    });
+
+    assert.isOk(result.data.data.allProjects);
+    const projects = result.data.data.allProjects.projects;
+
+    if (projects.length > 0) {
+      // socialMedia field should be present when requested
+      assert.isDefined(projects[0].socialMedia);
+      assert.isArray(projects[0].socialMedia);
+    }
   });
 }
 

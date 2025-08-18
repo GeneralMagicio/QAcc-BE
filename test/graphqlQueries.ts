@@ -834,6 +834,11 @@ export const fetchMultiFilterAllProjectsQuery = `
           networkId
           chainType
         }
+        socialMedia {
+          id
+          type
+          link
+        }
         qfRounds {
           name
           isActive
