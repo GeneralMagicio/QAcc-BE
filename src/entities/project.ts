@@ -71,7 +71,6 @@ export enum SortingField {
   QualityScore = 'QualityScore',
   ActiveQfRoundRaisedFunds = 'ActiveQfRoundRaisedFunds',
   EstimatedMatching = 'EstimatedMatching',
-  Rank = 'Rank',
 }
 
 export enum FilterField {
@@ -105,7 +104,6 @@ export enum OrderField {
   Donations = 'totalDonations',
   TraceDonations = 'totalTraceDonations',
   AcceptGiv = 'givingBlocksId',
-  Rank = 'rank',
 }
 
 export enum RevokeSteps {
@@ -311,10 +309,6 @@ export class Project extends BaseEntity {
   @Field(_type => Float, { nullable: true })
   @Column('float', { nullable: true })
   balance: number = 0;
-
-  @Field(_type => Float, { nullable: true })
-  @Column('real', { nullable: true, default: 0 })
-  rank?: number;
 
   @Field({ nullable: true })
   @Column({ nullable: true })

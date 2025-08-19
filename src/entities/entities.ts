@@ -40,8 +40,6 @@ import { SwapTransaction } from './swapTransaction';
 import { QaccPointsHistory } from './qaccPointsHistory';
 import { UserRankMaterializedView } from './userRanksMaterialized';
 import { VestingData } from './vestingData';
-import { VestingSchedule } from './vestingSchedule';
-import { TokenHolder } from './tokenHolder';
 import { TokenPriceHistory } from './tokenPriceHistory';
 
 export const getEntities = (): DataSourceOptions['entities'] => {
@@ -96,8 +94,6 @@ export const getEntities = (): DataSourceOptions['entities'] => {
     SwapTransaction,
     UserRankMaterializedView,
     VestingData,
-    VestingSchedule,
-    TokenHolder,
     TokenPriceHistory,
   ];
 };

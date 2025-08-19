@@ -18,8 +18,6 @@ import { RoundsResolver } from './roundsResolver';
 import { QAccResolver } from './qAccResolver';
 import { QaccPointsHistoryResolver } from './qaccPointsHistoryResolver';
 import { TokenPriceResolver } from './tokenPriceResolver';
-import { VestingScheduleResolver } from './vestingScheduleResolver';
-import { TokenHolderResolver } from './tokenHolderResolver';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export const getResolvers = (): Function[] => {
@@ -48,7 +46,5 @@ export const getResolvers = (): Function[] => {
     QAccResolver,
     QaccPointsHistoryResolver,
     TokenPriceResolver,
-    VestingScheduleResolver,
-    TokenHolderResolver,
   ];
 };
