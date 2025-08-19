@@ -103,8 +103,7 @@ export const filterProjectsQuery = (params: FilterProjectQueryInputParams) => {
       'categories.isActive = :isActive',
       { isActive: true },
     )
-    .leftJoinAndSelect('categories.mainCategory', 'mainCategory')
-    .leftJoinAndSelect('project.socialMedia', 'socialMedia');
+    .leftJoinAndSelect('categories.mainCategory', 'mainCategory');
 
   const isFilterByQF =
     !!filters?.find(f => f === FilterField.ActiveQfRound) && activeQfRoundId;
@@ -189,9 +188,6 @@ export const filterProjectsQuery = (params: FilterProjectQueryInputParams) => {
           )
           .addOrderBy(`project.verified`, OrderDirection.DESC);
       }
-      break;
-    case SortingField.Rank:
-      query.orderBy('project.rank', OrderDirection.ASC, 'NULLS LAST');
       break;
     default:
       query.orderBy('project.creationDate', OrderDirection.DESC);

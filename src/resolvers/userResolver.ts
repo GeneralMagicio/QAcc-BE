@@ -337,46 +337,11 @@ export class UserResolver {
     if (walletAddress) {
       whereCondition.walletAddress = walletAddress;
     }
-
-    // Get data from materialized view for efficient filtering/pagination
-    const [rankedUsers, totalCount] =
-      await UserRankMaterializedView.findAndCount({
-        where: whereCondition,
-        order: { [orderBy.field]: orderBy.direction },
-        take,
-        skip,
-      });
-
-    // If no users found, return early
-    if (rankedUsers.length === 0) {
-      return { users: [], totalCount };
-    }
-
-    // Extract user IDs to fetch only needed additional fields
-    const userIds = rankedUsers.map(user => user.id);
-
-    // Fetch only the needed fields that are missing from materialized view
-    const additionalUserData = await this.userRepository
-      .createQueryBuilder('user')
-      .select(['user.id', 'user.avatar', 'user.username'])
-      .where('user.id IN (:...userIds)', { userIds })
-      .getMany();
-
-    // Create a map for quick lookup of additional user data
-    const userMap = new Map(additionalUserData.map(user => [user.id, user]));
-
-    // Merge the ranked data with additional user data, preserving the order from materialized view
-    const users = rankedUsers.map(rankedUser => {
-      const additionalData = userMap.get(rankedUser.id);
-      if (additionalData) {
-        // Combine materialized view data with additional fields
-        return {
-          ...rankedUser,
-          avatar: additionalData.avatar,
-          username: additionalData.username,
-        };
-      }
-      return rankedUser; // Fallback to ranked user if additional data not found
+    const [users, totalCount] = await UserRankMaterializedView.findAndCount({
+      where: whereCondition,
+      order: { [orderBy.field]: orderBy.direction },
+      take,
+      skip,
     });
 
     return { users, totalCount };
