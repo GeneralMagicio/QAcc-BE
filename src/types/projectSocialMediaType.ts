@@ -5,6 +5,7 @@ export enum ProjectSocialMediaType {
   X = 'X',
   INSTAGRAM = 'INSTAGRAM',
   YOUTUBE = 'YOUTUBE',
+  REEL_VIDEO = 'REEL_VIDEO',
   LINKEDIN = 'LINKEDIN',
   REDDIT = 'REDDIT',
   DISCORD = 'DISCORD',
