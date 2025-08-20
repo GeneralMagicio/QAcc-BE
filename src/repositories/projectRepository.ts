@@ -103,7 +103,8 @@ export const filterProjectsQuery = (params: FilterProjectQueryInputParams) => {
       'categories.isActive = :isActive',
       { isActive: true },
     )
-    .leftJoinAndSelect('categories.mainCategory', 'mainCategory');
+    .leftJoinAndSelect('categories.mainCategory', 'mainCategory')
+    .leftJoinAndSelect('project.socialMedia', 'socialMedia');
 
   const isFilterByQF =
     !!filters?.find(f => f === FilterField.ActiveQfRound) && activeQfRoundId;
